@@ -1,0 +1,259 @@
+---
+import Base from '../layouts/Base.astro';
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+import Icon from '../components/Icon.astro';
+import { contact, nav, specialties, steps, followUp, others, facts, faqs } from '../data/site';
+---
+<Base
+  title="RB y Asociados · Asesoría en seguros y ahorro para el retiro"
+  description="Víctor Robles te ayuda a entender tus opciones de gastos médicos mayores y a planear tu ahorro para el retiro según tus metas y presupuesto."
+>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+
+  <!-- Cabecera -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#inicio" class="brand" aria-label="RB y Asociados, inicio">
+        <Logo class="brand-logo" />
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+        <Icon name="menu" class="i-open" /><Icon name="close" class="i-close" />
+      </button>
+      <nav id="menu" class="nav" aria-label="Principal">
+        <ul>
+          {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        </ul>
+        <a class="btn btn-primary btn-sm" href={contact.whatsapp} target="_blank" rel="noopener">
+          <Icon name="whatsapp" size={18} /> Escríbeme
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <!-- 1. Portada -->
+    <section id="inicio" class="hero">
+      <div class="hero-bg" aria-hidden="true">
+        <span class="orb orb-1"></span><span class="orb orb-2"></span>
+      </div>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow anim" style="--d:0">Víctor Robles · RB y Asociados</p>
+          <h1 class="anim" style="--d:1">
+            Asesoría en <span class="hl">seguros médicos</span> y <span class="hl">ahorro para el retiro</span>
+          </h1>
+          <p class="lead anim" style="--d:2">
+            Soy Víctor Robles, asesor en RB y Asociados. Te ayudo a entender tus opciones de gastos médicos
+            mayores y a planear tu ahorro para el retiro según tus metas y presupuesto.
+          </p>
+          <div class="cta-row anim" style="--d:3">
+            <a class="btn btn-primary" href={contact.whatsapp} target="_blank" rel="noopener">
+              <Icon name="whatsapp" size={20} /> Escríbeme por WhatsApp
+            </a>
+            <a class="btn btn-ghost" href={`mailto:${contact.email}`}>
+              <Icon name="mail" size={20} /> Enviar un correo
+            </a>
+          </div>
+          <p class="hero-cities anim" style="--d:4">
+            <Icon name="pin" size={18} /> {contact.cities.join(' · ')}
+          </p>
+        </div>
+
+        <figure class="portrait anim" style="--d:2">
+          <div class="portrait-frame">
+            <!-- Sustituir por la foto real de Víctor (medio cuerpo, luz natural) -->
+            <div class="portrait-placeholder">
+              <Logo variant="mark" class="portrait-mark" />
+              <span>Retrato de Víctor</span>
+            </div>
+          </div>
+          <figcaption class="portrait-card">
+            <strong>Víctor Robles</strong>
+            <span>Socio de RB y Asociados · Agente de seguros</span>
+          </figcaption>
+          <div class="portrait-badge" aria-hidden="true">
+            <span class="badge-num">1984</span>
+            <span>asesorando<br />desde</span>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 2. Especialidades -->
+    <section id="servicios" class="section">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Especialidades</p>
+          <h2>Dos decisiones importantes, explicadas con calma</h2>
+          <p class="section-lead">Empezamos por tu situación. Después revisamos opciones, costos y condiciones para que sepas exactamente qué estás contratando.</p>
+        </header>
+        <div class="spec-grid">
+          {specialties.map((s, i) => (
+            <article class="spec-card" data-reveal style={`--d:${i}`} id={s.id}>
+              <div class="spec-icon"><Icon name={s.icon} size={28} /></div>
+              <p class="spec-eyebrow">{s.eyebrow}</p>
+              <h3>{s.title}</h3>
+              <p class="spec-lead">{s.lead}</p>
+              <p class="spec-for">{s.forWho}</p>
+              <ul class="checks">
+                {s.points.map((p) => <li><Icon name="check" size={18} />{p}</li>)}
+              </ul>
+              <a class="link-arrow" href={contact.whatsappFor(s.tema)} target="_blank" rel="noopener">
+                {s.cta} <Icon name="arrow" size={18} />
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Método + seguimiento -->
+    <section id="acompanamiento" class="section section-dark">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Cómo te acompaño</p>
+          <h2>Un método claro, antes y después de contratar</h2>
+        </header>
+        <ol class="steps">
+          {steps.map((s, i) => (
+            <li class="step" data-reveal style={`--d:${i}`}>
+              <span class="step-num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))}
+        </ol>
+
+        <div class="follow">
+          <div class="follow-intro" data-reveal>
+            <h3>Después de contratar, sigo contigo</h3>
+            <p>¿Ya tienes una póliza? Escríbeme y la revisamos juntos.</p>
+            <a class="btn btn-light" href={contact.whatsappFor('revisar mi póliza actual')} target="_blank" rel="noopener">
+              Revisar mi póliza <Icon name="arrow" size={18} />
+            </a>
+          </div>
+          {followUp.map((f, i) => (
+            <article class="follow-card" data-reveal style={`--d:${i + 1}`}>
+              <Icon name={f.icon} size={28} class="follow-icon" />
+              <h4>{f.title}</h4>
+              <p>{f.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Otras formas de protegerte -->
+    <section class="section">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Otras formas de protegerte</p>
+          <h2>Tu familia, sus planes y tu negocio</h2>
+        </header>
+        <div class="others-grid">
+          {others.map((o, i) => (
+            <a class="other-card" data-reveal style={`--d:${i}`} href={contact.whatsappFor(o.tema)} target="_blank" rel="noopener">
+              <Icon name={o.icon} size={26} class="other-icon" />
+              <h3>{o.title}</h3>
+              <p>{o.text}</p>
+              <span class="other-more">Consultar <Icon name="arrow" size={16} /></span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Sobre Víctor -->
+    <section id="sobre-victor" class="section section-soft">
+      <div class="container about">
+        <div class="about-copy" data-reveal>
+          <p class="eyebrow">Sobre Víctor y RB</p>
+          <h2>Cuatro décadas explicando antes de recomendar</h2>
+          <p>
+            RB y Asociados es un despacho de asesoría en seguros con enfoque en gastos médicos mayores, vida y ahorro
+            para la educación y el retiro. Comenzamos reclutando y formando agentes de seguros, siempre con la asesoría
+            como punto central.
+          </p>
+          <p>
+            Hoy acompaño a mis clientes al elegir un plan, revisar sus renovaciones y orientarse durante una
+            hospitalización o trámite de reembolso.
+          </p>
+          <ul class="values" aria-label="Valores">
+            {['Compromiso', 'Ética', 'Respeto', 'Integridad', 'Confianza'].map((v) => <li>{v}</li>)}
+          </ul>
+        </div>
+        <dl class="facts">
+          {facts.map((f, i) => (
+            <div class="fact" data-reveal style={`--d:${i}`}>
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))}
+          <div class="fact fact-wide" data-reveal style="--d:3">
+            <dt>Formación</dt>
+            <dd class="fact-text">LUTC Fellow (primera generación) · F.S.S. American College e IMESFAC</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 6. Preguntas frecuentes -->
+    <section id="preguntas" class="section">
+      <div class="container faq-wrap">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Preguntas frecuentes</p>
+          <h2>Lo que más me preguntan</h2>
+          <p class="section-lead">¿Tienes otra duda? Pregúntame directamente, sin compromiso.</p>
+        </header>
+        <div class="faq" data-reveal>
+          {faqs.map((f, i) => (
+            <details name="faq" open={i === 0}>
+              <summary>{f.q}<Icon name="plus" size={20} class="faq-icon" /></summary>
+              <div class="faq-body"><p>{f.a}</p></div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Contacto -->
+    <section id="contacto" class="contact">
+      <div class="container contact-inner" data-reveal>
+        <p class="eyebrow">Contacto</p>
+        <h2>Platiquemos de lo que quieres proteger</h2>
+        <p class="contact-lead">
+          Para empezar, solo cuéntame qué tema te interesa y si tienes o has tenido un seguro.
+        </p>
+        <div class="contact-cards">
+          <a class="contact-card" href={contact.whatsapp} target="_blank" rel="noopener">
+            <Icon name="whatsapp" size={28} />
+            <span class="cc-label">WhatsApp</span>
+            <span class="cc-value">{contact.phoneDisplay}</span>
+          </a>
+          <a class="contact-card" href={`mailto:${contact.email}`}>
+            <Icon name="mail" size={28} />
+            <span class="cc-label">Correo</span>
+            <span class="cc-value">{contact.email}</span>
+          </a>
+        </div>
+        <p class="contact-cities"><Icon name="pin" size={18} /> Atención en {contact.cities.join(', ').replace(/, ([^,]*)$/, ' y $1')}</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <Logo tone="light" class="footer-logo" />
+      <p class="footer-meta">
+        © {new Date().getFullYear()} RB y Asociados. La emisión de pólizas y la resolución de reembolsos corresponden a
+        cada aseguradora conforme a las condiciones de la póliza.
+      </p>
+    </div>
+  </footer>
+
+  <!-- WhatsApp flotante (móvil) -->
+  <a class="wa-float" href={contact.whatsapp} target="_blank" rel="noopener" aria-label="Escribir a Víctor por WhatsApp">
+    <Icon name="whatsapp" size={26} />
+  </a>
+</Base>

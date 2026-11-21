@@ -126,3 +126,45 @@ export const faqs = [
     a: 'Depende de tu meta, de cuántos años faltan y de lo que puedes aportar sin descuidar tu presupuesto. Lo traducimos a un monto de aportación y un plazo, y te explico qué parte es proyección y qué garantiza el contrato.',
   },
 ];
+
+// ---------- v2 ----------
+
+// Redes de Víctor: completar las URLs. Si una URL queda vacía, el ícono se muestra como "pendiente".
+export const socials = [
+  { name: 'LinkedIn', icon: 'linkedin', url: '' },
+  { name: 'Facebook', icon: 'facebook', url: '' },
+  { name: 'Instagram', icon: 'instagram', url: '' },
+];
+
+// Aseguradoras: confirmar relaciones vigentes y permiso para usar logotipos.
+// Cuando haya logos, agregar `logo: '/aseguradoras/archivo.svg'`.
+export const insurers = [
+  { name: 'GNP Seguros' },
+  { name: 'MetLife' },
+  { name: 'Seguros Monterrey New York Life' },
+  { name: 'Insignia Life' },
+];
+
+export const moments = [
+  {
+    key: 'antes',
+    kicker: 'Antes de contratar',
+    title: 'Entiendes lo que firmas',
+    text: 'Platicamos de lo que quieres proteger y de lo que ya tienes. Te explico qué cubre cada opción, qué no, y cómo encaja en tu presupuesto. Sin prisa y con las condiciones a la vista.',
+    detail: 'Deducible, coaseguro y suma asegurada, en lenguaje sencillo.',
+  },
+  {
+    key: 'durante',
+    kicker: 'Cuando lo necesitas',
+    title: 'No pasas por el hospital solo',
+    text: 'Si necesitas usar tu seguro médico por una hospitalización, te oriento durante el proceso y doy seguimiento a tu trámite de reembolso.',
+    detail: 'Una llamada o un mensaje, y sabes cuál es el siguiente paso.',
+  },
+  {
+    key: 'renovacion',
+    kicker: 'Cada año',
+    title: 'Tu póliza crece contigo',
+    text: 'Al renovar, reviso contigo qué cubre tu póliza y cuánto estás pagando. Si tu vida cambió, tu protección también debería hacerlo.',
+    detail: '¿Ya tienes una póliza? También la revisamos juntos.',
+  },
+];
