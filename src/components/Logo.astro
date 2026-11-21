@@ -1,0 +1,23 @@
+---
+import horizontal from '../../public/brand/rb-asociados-horizontal.svg?raw';
+import mark from '../../public/brand/rb-asociados-perfil.svg?raw';
+
+interface Props { variant?: 'horizontal' | 'mark'; tone?: 'dark' | 'light'; class?: string }
+const { variant = 'horizontal', tone = 'dark', class: cls } = Astro.props;
+
+let svg = variant === 'mark' ? mark : horizontal;
+// Quitar <title> (el contenedor lleva aria-label) y adaptar al tono claro
+svg = svg.replace(/<title>.*?<\/title>/, '').replace(/role="img"/, 'aria-hidden="true"');
+if (tone === 'light') svg = svg.replaceAll('#202E64', '#FFF5EA');
+// IDs únicos por instancia (el logo puede aparecer varias veces)
+const uid = Math.random().toString(36).slice(2, 7);
+svg = svg.replaceAll('rb-accent', `rb-accent-${uid}`);
+// Hacer el SVG fluido
+svg = svg.replace(/ width="\d+" height="\d+"/, '');
+---
+<span class:list={['logo', cls]} role="img" aria-label="RB y Asociados · Asegurando tu futuro" set:html={svg} />
+
+<style>
+  .logo { display: inline-block; line-height: 0; }
+  .logo :global(svg) { width: 100%; height: auto; display: block; }
+</style>

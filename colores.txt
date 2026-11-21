@@ -1,0 +1,5 @@
+| Color | HEX | Uso |
+|---|---|---|
+| **Azul índigo** | `#202E64` | Color principal del logo y fondo de la foto de perfil y el favicon. |
+| **Naranja quemado** | `#D25B21` | Lema y remate de la firma. En el avatar y el favicon, se usa en todas las iniciales **RB**. |
+| **Marfil cálido** | `#FFF5EA` | Fondo de presentación y de piezas claras. Las firmas horizontal y compacta se entregaron con fondo transparente. |
