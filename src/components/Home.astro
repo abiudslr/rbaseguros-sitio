@@ -1,0 +1,234 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import LangSwitch from './LangSwitch.astro';
+import '../styles/v2.css';
+import { content, shared, type Lang } from '../i18n/content';
+
+import heroImg from '../assets/photos/hero-mama-hija.jpg';
+import antesImg from '../assets/photos/antes-pareja-papeles.jpg';
+import duranteImg from '../assets/photos/durante-hospital-manos.jpg';
+import renovacionImg from '../assets/photos/renovacion-pareja-mayor.jpg';
+import retiroImg from '../assets/photos/retiro-abuela-hija.jpg';
+import medicoImg from '../assets/photos/medico-abuelo-bebe.jpg';
+import cierreImg from '../assets/photos/cierre-familia-mesa.jpg';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = content[lang];
+
+const momentImgs: Record<string, ImageMetadata> = { antes: antesImg, durante: duranteImg, renovacion: renovacionImg };
+const imgFormats = ['avif', 'webp'] as const;
+const { medical, retirement } = t.services;
+---
+<Base lang={lang} title={t.title} description={t.description}>
+  <a class="skip" href="#contenido">{t.skip}</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="#inicio" class="brand" aria-label={t.homeLabel}><Logo class="brand-logo" /></a>
+      <div class="header-end">
+        <nav id="menu" class="nav" aria-label={t.navLabel}>
+          <ul>{t.nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}</ul>
+          <a class="btn btn-primary btn-sm" href={t.whatsapp} target="_blank" rel="noopener">
+            <Icon name="whatsapp" size={18} /> {t.writeMe}
+          </a>
+        </nav>
+        <LangSwitch lang={lang} label={t.langLabel} />
+        <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label={t.menuOpen}>
+          <Icon name="menu" class="i-open" /><Icon name="close" class="i-close" />
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <!-- PORTADA -->
+    <section id="inicio" class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="kicker rise" style="--d:0">{t.hero.kicker}</p>
+          <h1>
+            {t.hero.lines.map((l, i) => (
+              <span class="line"><span class:list={['rise', { accent: i === 2 }]} style={`--d:${i + 1}`}>{l}</span></span>
+            ))}
+          </h1>
+          <p class="hero-lead rise" style="--d:4">{t.hero.lead}</p>
+          <div class="hero-cta rise" style="--d:5">
+            <a class="btn btn-primary" href={t.whatsapp} target="_blank" rel="noopener">
+              <Icon name="whatsapp" size={20} /> {t.hero.cta}
+            </a>
+            <a class="btn-text" href="#acompanamiento">{t.hero.secondary} <Icon name="arrow" size={18} /></a>
+          </div>
+        </div>
+
+        <div class="hero-media">
+          <div class="hero-photo reveal-clip">
+            <Picture src={heroImg} formats={imgFormats} widths={[480, 760, 1100]} sizes="(min-width: 960px) 44vw, 92vw"
+              alt={t.hero.imgAlt} loading="eager" fetchpriority="high" class="cover" />
+          </div>
+          <div class="hero-note rise" style="--d:6">
+            <span class="dot" aria-hidden="true"></span>
+            {t.hero.note}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FRASE -->
+    <section class="statement" aria-label={t.statement.label}>
+      <div class="wrap">
+        <p class="statement-text" data-reveal>
+          {t.statement.before}<em>{t.statement.em}</em>{t.statement.after}
+        </p>
+      </div>
+    </section>
+
+    <!-- ACOMPAÑAMIENTO -->
+    <section id="acompanamiento" class="moments">
+      <div class="wrap">
+        <header class="head" data-reveal>
+          <p class="kicker">{t.moments.kicker}</p>
+          <h2>{t.moments.title}</h2>
+        </header>
+
+        {t.moments.items.map((m, i) => (
+          <article class:list={['moment', { flip: i % 2 === 1 }]}>
+            <div class="moment-media reveal-clip" data-reveal>
+              <Picture src={momentImgs[m.key]} formats={imgFormats} widths={[480, 800, 1200]}
+                sizes="(min-width: 960px) 50vw, 92vw" alt={m.alt} class="cover" />
+            </div>
+            <div class="moment-copy" data-reveal>
+              <span class="moment-num" aria-hidden="true">0{i + 1}</span>
+              <p class="kicker">{m.kicker}</p>
+              <h3>{m.title}</h3>
+              <p>{m.text}</p>
+              <p class="moment-detail">{m.detail}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- SERVICIOS -->
+    <section id="servicios" class="services">
+      <div class="wrap">
+        <header class="head" data-reveal>
+          <p class="kicker">{t.services.kicker}</p>
+          <h2>{t.services.title}</h2>
+        </header>
+        <div class="service-grid">
+          {[{ s: medical, img: medicoImg }, { s: retirement, img: retiroImg }].map(({ s, img }, i) => (
+            <a class="service" href={t.waFor(s.tema)} target="_blank" rel="noopener" data-reveal style={`--d:${i}`}>
+              <Picture src={img} formats={imgFormats} widths={[480, 800]} sizes="(min-width: 860px) 46vw, 92vw"
+                alt={s.alt} class="cover" />
+              <div class="service-body">
+                <p class="kicker light">{s.kicker}</p>
+                <h3>{s.title}</h3>
+                <span class="service-cta">{s.cta} <Icon name="arrow" size={18} /></span>
+              </div>
+            </a>
+          ))}
+        </div>
+        <p class="also" data-reveal>
+          {t.services.alsoPrefix}{' '}
+          {t.services.also.map((a, i, arr) => (
+            <>{i > 0 && (i === arr.length - 1 ? ` ${t.services.and} ` : ', ')}<a href={t.waFor(a.tema)} target="_blank" rel="noopener">{a.label}</a></>
+          ))}.
+        </p>
+      </div>
+    </section>
+
+    <!-- SOBRE VÍCTOR -->
+    <section id="victor" class="victor">
+      <div class="wrap victor-grid">
+        <figure class="victor-photo" data-reveal>
+          <!-- FOTO DE VÍCTOR: reemplazar este bloque por <Picture src={victorImg} ... class="cover" /> -->
+          <div class="photo-slot">
+            <Logo variant="mark" class="slot-mark" />
+            <span>{t.victor.photo}</span>
+          </div>
+        </figure>
+        <div class="victor-copy" data-reveal style="--d:1">
+          <p class="kicker light">{t.victor.kicker}</p>
+          <h2>{t.victor.title}</h2>
+          <p class="victor-lead">{t.victor.lead}</p>
+          <dl class="victor-facts">
+            {t.victor.facts.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}
+          </dl>
+          <p class="victor-cred">{t.victor.cred}</p>
+          <ul class="socials" aria-label={t.victor.socialsLabel}>
+            {shared.socials.map((s) => (
+              <li>
+                <a href={s.url || '#'} class:list={{ pending: !s.url }} aria-label={s.name} target={s.url ? '_blank' : undefined} rel="noopener">
+                  <Icon name={s.icon} size={20} />
+                </a>
+              </li>
+            ))}
+            <li><a href={t.whatsapp} aria-label="WhatsApp" target="_blank" rel="noopener"><Icon name="whatsapp" size={20} /></a></li>
+            <li><a href={`mailto:${shared.email}`} aria-label={t.victor.emailLabel}><Icon name="mail" size={20} /></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ASEGURADORAS -->
+    <section class="insurers" aria-labelledby="insurers-title">
+      <div class="wrap">
+        <p id="insurers-title" class="insurers-title" data-reveal>{t.insurersTitle}</p>
+        <ul class="insurer-list" data-reveal>
+          {shared.insurers.map((c) => <li>{c}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <!-- PREGUNTAS -->
+    <section id="preguntas" class="faq-section">
+      <div class="wrap faq-grid">
+        <header class="head" data-reveal>
+          <p class="kicker">{t.faq.kicker}</p>
+          <h2>{t.faq.title}</h2>
+        </header>
+        <div class="faq" data-reveal>
+          {t.faq.items.map((f) => (
+            <details name="faq">
+              <summary>{f.q}<Icon name="plus" size={20} class="faq-icon" /></summary>
+              <div class="faq-body"><p>{f.a}</p></div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CIERRE -->
+    <section id="contacto" class="closing">
+      <Picture src={cierreImg} formats={imgFormats} widths={[800, 1400, 1800]} sizes="100vw" alt="" class="closing-bg" />
+      <div class="wrap closing-inner" data-reveal>
+        <h2>{t.closing.title}</h2>
+        <p>{t.closing.text}</p>
+        <div class="closing-cta">
+          <a class="btn btn-primary" href={t.whatsapp} target="_blank" rel="noopener">
+            <Icon name="whatsapp" size={20} /> {shared.phoneDisplay}
+          </a>
+          <a class="btn btn-outline-light" href={`mailto:${shared.email}`}>
+            <Icon name="mail" size={20} /> {shared.email}
+          </a>
+        </div>
+        <p class="closing-cities"><Icon name="pin" size={16} /> {shared.cities.join(' · ')}</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <Logo tone="light" class="footer-logo" />
+      <p>© {new Date().getFullYear()} {t.footer}</p>
+    </div>
+  </footer>
+
+  <a class="wa-float" href={t.whatsapp} target="_blank" rel="noopener" aria-label={t.waFloat}>
+    <Icon name="whatsapp" size={26} />
+  </a>
+</Base>

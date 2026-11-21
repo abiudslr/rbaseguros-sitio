@@ -2,11 +2,21 @@
 import '@fontsource/dm-serif-text/400.css';
 import '@fontsource-variable/source-sans-3/wght.css';
 
-interface Props { title: string; description: string }
-const { title, description } = Astro.props;
+import { content, langPath, langs, type Lang } from '../i18n/content';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Si se indica, la página es multilenguaje: agrega hreflang y detección de idioma. */
+  lang?: Lang;
+}
+const { title, description, lang } = Astro.props;
+const htmlLang = lang ? content[lang].htmlLang : 'es-MX';
+const ogLocale = lang ? content[lang].ogLocale : 'es_MX';
+const site = Astro.site ?? new URL('https://rbaseguros.com.mx');
 ---
 <!doctype html>
-<html lang="es-MX">
+<html lang={htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -17,8 +27,31 @@ const { title, description } = Astro.props;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="es_MX" />
+    <meta property="og:locale" content={ogLocale} />
+    {lang && (
+      <>
+        <link rel="canonical" href={new URL(langPath[lang], site)} />
+        {langs.map((l) => <link rel="alternate" hreflang={l} href={new URL(langPath[l], site)} />)}
+        <link rel="alternate" hreflang="x-default" href={new URL(langPath.es, site)} />
+      </>
+    )}
     <script is:inline>document.documentElement.classList.add('js');</script>
+    {lang && (
+      <script is:inline define:vars={{ current: lang, paths: langPath }}>
+        // Idioma: 1) la elección guardada del usuario manda; 2) si no hay, se usa el idioma del navegador.
+        // Los buscadores no se redirigen, para que indexen ambas versiones.
+        try {
+          var isBot = /bot|crawl|spider|slurp|lighthouse|preview/i.test(navigator.userAgent);
+          var saved = localStorage.getItem('rb-lang');
+          var want = saved;
+          if (!want) {
+            var list = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+            want = /^es\b/i.test(list[0] || '') ? 'es' : 'en';
+          }
+          if (!isBot && want !== current && paths[want]) location.replace(paths[want] + location.search + location.hash);
+        } catch (e) {}
+      </script>
+    )}
   </head>
   <body>
     <slot />
@@ -53,6 +86,20 @@ const { title, description } = Astro.props;
       toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
       menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
       document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+
+      // Selector de idioma: guarda la elección, anima y conserva la sección actual
+      document.querySelectorAll<HTMLAnchorElement>('.lang-switch a').forEach((a) => {
+        a.addEventListener('click', (e) => {
+          const target = a.dataset.lang;
+          if (!target) return;
+          try { localStorage.setItem('rb-lang', target); } catch {}
+          if (a.classList.contains('active')) { e.preventDefault(); return; }
+          e.preventDefault();
+          a.closest('.lang-switch')?.classList.add('flip');
+          const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+          setTimeout(() => location.assign(a.pathname + location.hash), reduce ? 0 : 260);
+        });
+      });
     </script>
   </body>
 </html>
