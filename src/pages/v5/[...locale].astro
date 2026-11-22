@@ -15,6 +15,7 @@ import life from '../../assets/v4/vida.webp';
 import school from '../../assets/v4/educacion.webp';
 import business from '../../assets/v4/empresas.webp';
 import car from '../../assets/v4/autos.webp';
+import doctor from '../../assets/photos/medico-abuelo-bebe.jpg';
 
 const insurers: [string, string][] = [
   ['GNP Seguros', 'gnp.svg'], ['MetLife', 'metlife.svg'],
@@ -216,8 +217,17 @@ const langs = [
       </div></section>
 
       <section class="wrap section columns" id="preguntas">
-        <div><h2 data-reveal="lines"><span class="line"><span>{copy('Antes de decidir.', 'Before you decide.')}</span></span></h2></div>
-        <div>{v.faq.map((f, i) => <details name="faq" data-reveal style={`--d:${i * 70}ms`}><summary><span class="sum-label">{f.q}</span><span class="toggle" aria-hidden="true"></span></summary><div class="details-body"><p>{f.a}</p></div></details>)}</div>
+        <div class="faq-aside">
+          <h2 data-reveal="lines"><span class="line"><span>{copy('Antes de decidir.', 'Before you decide.')}</span></span></h2>
+          <p class="faq-intro" data-reveal>{copy('Las dudas que más nos hacen sobre precio, uso y renovación.', 'What people ask us most about price, use and renewal.')}</p>
+          <figure class="faq-photo" data-reveal="mask">
+            <Image src={doctor} alt={copy('Un médico revisa a un bebé en brazos de su abuelo.', 'A doctor checks a baby held by its grandfather.')} widths={[480, 800, 1100]} sizes="(max-width: 680px) 88vw, 40vw" loading="lazy" />
+          </figure>
+        </div>
+        <div class="faq-list">
+          {v.faq.map((f, i) => <details name="faq" open={i === 0} data-reveal style={`--d:${i * 70}ms`}><summary><span class="sum-label">{f.q}</span><span class="toggle" aria-hidden="true"></span></summary><div class="details-body"><p>{f.a}</p></div></details>)}
+          <p class="faq-more" data-reveal>{copy('¿Tienes otra duda?', 'Another question?')} <a class="link" href={consultation}>{copy('Escríbenos por WhatsApp', 'Message us on WhatsApp')}<Icon class="arrow" name="arrow" size={16}/></a></p>
+        </div>
       </section>
     </main>
 

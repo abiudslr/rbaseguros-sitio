@@ -268,6 +268,20 @@ details:not([open]) .details-body > * { opacity: 0; transform: translateY(10px);
 .detail { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; color: var(--orange-text); font-weight: 560; font-size: 1rem !important; }
 .detail svg { flex: none; margin-top: 4px; }
 
+/* ───────── Dudas: foto e introducción a la izquierda, preguntas a la derecha ───────── */
+#preguntas { align-content: center; align-items: start; }
+.faq-aside { display: grid; align-content: start; }
+.faq-aside h2 { margin-bottom: 18px; }
+.faq-intro { max-width: 36ch; margin-bottom: 32px; font-size: 1.12rem; color: #44507f; }
+.faq-photo { margin: 0; aspect-ratio: 4 / 3; max-height: 44svh; overflow: hidden; border-radius: 6px; }
+.faq-photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+.faq-more { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-top: 28px; font-size: 1.05rem; color: #44507f; }
+.faq-more .link { color: var(--ink); font-weight: 560; }
+@media (max-width: 680px) {
+  .faq-photo { aspect-ratio: 16 / 9; max-height: none; }
+  .faq-intro { margin-bottom: 24px; }
+}
+
 /* ───────── Soluciones: explorador ───────── */
 .sol-head { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: end; margin-bottom: clamp(32px, 4vw, 56px); }
 .sol-head h2 { margin: 0; }
@@ -396,8 +410,8 @@ footer .section { padding-bottom: 30px; }
 footer h2 { font-size: min(clamp(3rem, 7vw, 7.5rem), 13vw); margin-bottom: 36px; }
 footer h2 em { color: var(--peach); }
 .contacts { display: flex; flex-wrap: wrap; align-items: center; gap: 28px; }
-/* El pie llena su pantalla: arriba la invitación, abajo los enlaces de cierre */
-footer > .footer-inner { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: clamp(48px, 7vw, 96px); }
+/* El pie llena su pantalla con la invitación y los enlaces juntos, centrados: sin un hueco entre ambos */
+footer > .footer-inner { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(56px, 7vw, 104px); }
 .closing-links { border-top: 1px solid #ffffff30; padding-top: 32px; }
 .closing-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 32px 24px; }
 .closing-brand { grid-column: span 4; display: grid; gap: 16px; align-content: start; }
