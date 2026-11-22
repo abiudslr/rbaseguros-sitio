@@ -16,6 +16,7 @@ import renewal from '../../assets/photos/renovacion-pareja-mayor.jpg';
 import doctor from '../../assets/photos/medico-abuelo-bebe.jpg';
 import family from '../../assets/photos/cierre-familia-mesa.jpg';
 import logoRaw from '../../../public/brand/rb-asociados-horizontal.svg?raw';
+import Icon from '../../components/Icon.astro';
 
 export function getStaticPaths() {
   return [{ params: { locale: undefined } }, { params: { locale: 'en' } }];
@@ -39,6 +40,16 @@ const logo = (tone: 'dark' | 'light') => {
 const primary = copy('Solicitar asesoría', 'Book a consultation');
 const consultation = t.waFor(copy('una primera asesoría', 'an initial consultation'));
 const mail = `mailto:${shared.email}`;
+
+// Carrusel de aseguradoras (como en la v5): la segunda fila en otro orden para que nunca coincidan los logos.
+const insurers: [string, string][] = [
+  ['GNP Seguros', 'gnp.svg'], ['MetLife', 'metlife.svg'],
+  ['Seguros Monterrey New York Life', 'monterrey.webp'], ['Insignia Life', 'insignia.svg'],
+  ['Bupa', 'bupa.svg'], ['Quálitas', 'qualitas.svg'],
+  ['ANA Seguros', 'ana.svg'], ['Prevem Seguros', 'prevem.webp'],
+];
+const rows = [insurers, [...insurers.slice(4), ...insurers.slice(0, 4)].reverse()];
+const tall = ['bupa.svg', 'qualitas.svg', 'ana.svg'];
 
 const services = [
   { id: 'gastos-medicos', name: copy('Gastos médicos mayores', 'Major medical insurance'), line: copy('Red de hospitales, deducible y coaseguro.', 'Hospital network, deductible and coinsurance.'), src: await img(medical, 1200), alt: copy('Una doctora revisa a un paciente en el consultorio.', 'A doctor examines a patient in the consulting room.') },
@@ -128,6 +139,24 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
   .footer .nav__logo .rb-logo { width: 240px; }
   .advisor-photo { height: min(600px, calc(100svh - 240px)); }
   .faq-photo { height: min(640px, calc(100svh - 240px)); } .faq-photo .frame__img { object-position: 50% 35%; }
+  /* botones de WhatsApp: el logo antes del texto */
+  .btn--wa { gap: var(--s-2); } .btn--wa > svg:first-child { flex: none; }
+  /* carrusel de aseguradoras: dos filas en sentidos opuestos, pausa al pasar el cursor y fuera de pantalla */
+  .ins-marquee { display: grid; gap: 16px; margin-top: var(--s-8); -webkit-mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+  .ins-row { overflow: hidden; }
+  .ins-track { display: flex; width: max-content; margin: 0; padding: 0; list-style: none; animation: ins-marquee 46s linear infinite; animation-play-state: paused; }
+  .ins-row.reverse .ins-track { animation-direction: reverse; animation-duration: 54s; }
+  .ins-marquee.running .ins-track { animation-play-state: running; }
+  .ins-marquee:hover .ins-track { animation-play-state: paused; }
+  @keyframes ins-marquee { to { transform: translate3d(-50%, 0, 0); } }
+  .ins-track li { flex: none; display: grid; place-items: center; margin: 0 16px 0 0; width: clamp(150px, 15vw, 220px); height: clamp(76px, 7vw, 100px); padding: 18px 26px; background: #fff; border-radius: var(--r-md); transition: transform .4s ease, box-shadow .4s ease; }
+  .ins-track li.tall { padding-block: 10px; }
+  .ins-track img { width: 100%; height: 100%; max-height: 50px; object-fit: contain; filter: grayscale(1) contrast(.9); opacity: .7; transition: filter .4s ease, opacity .4s ease; user-select: none; }
+  .ins-track li.tall img { max-height: 70px; }
+  .ins-track li:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -22px rgb(32 46 100 / .5); }
+  .ins-track li:hover img { filter: none; opacity: 1; }
+  @media (max-width: 639px) { .ins-marquee { gap: 10px; } .ins-track li { margin-right: 10px; } }
+  @media (prefers-reduced-motion: reduce) { .ins-track { animation: none; flex-wrap: wrap; width: auto; gap: 12px; } .ins-track li { margin: 0; } .ins-track li[aria-hidden="true"], .ins-row.reverse { display: none; } .ins-marquee { -webkit-mask: none; mask: none; } }
   .socials-row { display: flex; gap: var(--s-5); flex-wrap: wrap; }
   .socials-row a { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; }
   .socials-row img { width: 20px; height: 20px; }
@@ -177,7 +206,7 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
       <div class="nav__item"><a class="nav__link" href="#faq">{copy('Preguntas', 'Questions')}</a></div>
     </nav>
     <div class="nav__actions">
-      <a class="btn btn--primary" href={consultation}>{primary}</a>
+      <a class="btn btn--primary btn--wa" href={consultation}><Icon name="whatsapp" size={18}/>{primary}</a>
     </div>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-label={copy('Menú', 'Menu')}>
       <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -192,7 +221,7 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
       <div class="hero__text">
         <h1 id="hero-h">{copy('Asesoría en seguros y retiro', 'Insurance and retirement advice')}</h1>
         <p class="hero__lead">{copy('Víctor Robles te ayuda a elegir tu seguro médico o tu plan de retiro y te acompaña en cada renovación. Agente desde 1984.', 'Víctor Robles helps you choose your health insurance or retirement plan and stays with you at every renewal. An agent since 1984.')}</p>
-        <div class="btn-row"><a class="btn btn--primary" href={consultation}>{primary}<Fragment set:html={arrow} /></a><a class="btn btn--secondary" href="#coberturas">{copy('Ver coberturas', 'See coverage')}</a></div>
+        <div class="btn-row"><a class="btn btn--primary btn--wa" href={consultation}><Icon name="whatsapp" size={18}/>{primary}<Fragment set:html={arrow} /></a><a class="btn btn--secondary" href="#coberturas">{copy('Ver coberturas', 'See coverage')}</a></div>
       </div>
     </div></div>
   </section>
@@ -235,8 +264,21 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
     <div class="wrap">
       <p class="t-label">{copy('Aseguradoras', 'Insurers')}</p>
       {english
-        ? <p class="mo-wh__text">We are not tied to one insurer. We compare plans from GNP, MetLife, Seguros Monterrey New York Life, Insignia Life, Bupa, Quálitas, ANA and Prevem, and recommend the one that fits <strong>your budget</strong>.</p>
-        : <p class="mo-wh__text">No dependemos de una sola aseguradora. Comparamos planes de GNP, MetLife, Seguros Monterrey New York Life, Insignia Life, Bupa, Quálitas, ANA y Prevem, y te recomendamos el que encaja con <strong>tu presupuesto</strong>.</p>}
+        ? <p class="mo-wh__text">We are not tied to one insurer. We compare plans from several companies and recommend the one that fits <strong>your budget</strong>.</p>
+        : <p class="mo-wh__text">No dependemos de una sola aseguradora. Comparamos planes de varias compañías y te recomendamos el que encaja con <strong>tu presupuesto</strong>.</p>}
+      <div class="ins-marquee" data-marquee>
+        {rows.map((row, r) => (
+          <div class:list={['ins-row', { reverse: r === 1 }]}>
+            <ul class="ins-track">
+              {[0, 1].map(k => row.map(([name, file]) => (
+                <li class:list={{ tall: tall.includes(file) }} aria-hidden={k === 1 || r === 1 ? 'true' : undefined}>
+                  <img src={'/aseguradoras/' + file} alt={k === 0 && r === 0 ? name : ''} loading="lazy" decoding="async" draggable="false" width="200" height="60">
+                </li>
+              )))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -275,7 +317,7 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
         <h2 id="close-h">{copy('Tu primera asesoría, por WhatsApp', 'Your first consultation, on WhatsApp')}</h2>
         <p>{copy('Cuéntanos qué tema te interesa y si tienes o has tenido un seguro.', 'Tell us what you are interested in and whether you have or have had insurance.')}</p>
       </div>
-      <a class="btn btn--primary btn--xl btn--wide" href={consultation}>{primary}<Fragment set:html={arrow} /></a>
+      <a class="btn btn--primary btn--xl btn--wide btn--wa" href={consultation}><Icon name="whatsapp" size={24}/>{primary}<Fragment set:html={arrow} /></a>
     </div>
     <div class="closing__links">
       <div class="grid">
@@ -291,16 +333,20 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
       <div class="footer__legal">
         <span>&copy; 2026 RB y Asociados</span>
         <a href={other.href} lang={other.lang} hreflang={other.lang}>{other.label}</a>
-        <details class="credits"><summary>{copy('Fotografías vía Unsplash', 'Photographs via Unsplash')}</summary><p>{copy('Fotografías del proceso con Licencia Unsplash. Los nombres de las aseguradoras son marcas de sus dueños.', 'Process photographs under the Unsplash License. Insurer names are trademarks of their owners.')}</p></details>
+        <details class="credits"><summary>{copy('Fotografías vía Unsplash', 'Photographs via Unsplash')}</summary><p>{copy('Fotografías del proceso con Licencia Unsplash. Los logotipos de las aseguradoras son marcas de sus dueños.', 'Process photographs under the Unsplash License. Insurer logos are trademarks of their owners.')}</p></details>
       </div>
     </div>
   </div>
 </footer>
 
 <nav class="actionbar" aria-label={copy('Acción rápida', 'Quick action')}>
-  <a class="btn btn--primary" href={consultation}>{primary}</a>
+  <a class="btn btn--primary btn--wa" href={consultation}><Icon name="whatsapp" size={18}/>{primary}</a>
 </nav>
 
+<script is:inline>
+  // El carrusel de aseguradoras solo corre mientras está en pantalla
+  (() => { const m = document.querySelector('[data-marquee]'); if (m && 'IntersectionObserver' in window) new IntersectionObserver(([e]) => m.classList.toggle('running', e.isIntersecting)).observe(m); })();
+</script>
 <script is:inline type="module" src="/assets/system.js"></script>
 <script is:inline type="module" src="/assets/motion/motion.js"></script>
 <script is:inline type="module" src="/assets/layout/layout.js"></script>
