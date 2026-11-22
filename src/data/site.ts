@@ -131,9 +131,8 @@ export const faqs = [
 
 // Redes de Víctor: completar las URLs. Si una URL queda vacía, el ícono se muestra como "pendiente".
 export const socials = [
-  { name: 'LinkedIn', icon: 'linkedin', url: '' },
-  { name: 'Facebook', icon: 'facebook', url: '' },
-  { name: 'Instagram', icon: 'instagram', url: '' },
+  { name: 'LinkedIn', icon: 'linkedin', url: 'https://www.linkedin.com/in/victorguillermoroblesfigueroa96ba3a55/' },
+  { name: 'Instagram', icon: 'instagram', url: 'https://www.instagram.com/victorrobles577/' },
 ];
 
 // Aseguradoras: confirmar relaciones vigentes y permiso para usar logotipos.

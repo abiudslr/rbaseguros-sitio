@@ -14,9 +14,8 @@ export const shared = {
   cities: ['CDMX', 'Puebla', 'Guadalajara', 'Monterrey'],
   // Redes de Víctor: completar las URLs. Vacías = ícono "pendiente".
   socials: [
-    { name: 'LinkedIn', icon: 'linkedin', url: '' },
-    { name: 'Facebook', icon: 'facebook', url: '' },
-    { name: 'Instagram', icon: 'instagram', url: '' },
+    { name: 'LinkedIn', icon: 'linkedin', url: 'https://www.linkedin.com/in/victorguillermoroblesfigueroa96ba3a55/' },
+    { name: 'Instagram', icon: 'instagram', url: 'https://www.instagram.com/victorrobles577/' },
   ],
   // Confirmar relaciones vigentes y permiso para usar logotipos.
   insurers: ['GNP Seguros', 'MetLife', 'Seguros Monterrey New York Life', 'Insignia Life'],
