@@ -51,7 +51,8 @@ h3 { font-size: clamp(1.85rem, 3vw, 3.2rem); }
 .light-eyebrow::before { display: none; }
 .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--peach); box-shadow: 0 0 0 0 #ffb38599; animation: pulse 2.6s ease-out infinite; }
 @keyframes pulse { 70%, 100% { box-shadow: 0 0 0 9px #ffb38500; } }
-.line { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; }
+/* Margen extra a la derecha para que las cursivas (p. ej. "?") no se recorten con la máscara */
+.line { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .14em .08em 0; margin: 0 -.14em -.08em 0; }
 .line > span { display: inline-block; }
 h1 .line { display: block; }
 
