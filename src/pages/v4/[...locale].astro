@@ -1,0 +1,122 @@
+---
+import { Image } from 'astro:assets';
+import '@fontsource-variable/source-sans-3/wght.css';
+import '@fontsource/dm-serif-text/latin-400.css';
+import '../../styles/v4.css';
+import { content, shared } from '../../i18n/content';
+import Logo from '../../components/Logo.astro';
+import Icon from '../../components/Icon.astro';
+import family from '../../assets/v4/patio.webp';
+import medical from '../../assets/v4/cuidado.webp';
+import retirement from '../../assets/v4/pacifico.webp';
+const portraits = import.meta.glob<{ default: ImageMetadata }>('../../assets/v4/victor.*', { eager: true });
+const portrait = Object.values(portraits)[0]?.default;
+
+export function getStaticPaths() {
+  return [{ params: { locale: undefined } }, { params: { locale: 'en' } }];
+}
+const english = Astro.params.locale === 'en';
+const t = content[english ? 'en' : 'es'];
+const copy = (es: string, en: string) => english ? en : es;
+const firm = copy('La firma', 'The firm');
+const services = copy('Soluciones', 'Services');
+const talk = copy('Solicitar asesoría', 'Book a consultation');
+const consultation = t.waFor(copy('una primera asesoría', 'an initial consultation'));
+---
+<!doctype html>
+<html lang={t.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#202e64" />
+    <meta name="robots" content="noindex" />
+    <meta name="description" content={t.description} />
+    <link rel="icon" href="/favicon.svg" />
+    <title>RB y Asociados · {copy('Seguros y retiro', 'Insurance and retirement')}</title>
+  </head>
+  <body id="inicio">
+    <a class="skip" href="#contenido">{t.skip}</a>
+    <header class="mast wrap">
+      <a class="brand" href="#inicio" aria-label={t.homeLabel}><Logo /></a>
+      <nav aria-label={t.navLabel}>
+        <a href="#acompanamiento">{copy('Acompañamiento','Guidance')}</a><a href="#soluciones">{services}</a><a href="#firma">{firm}</a><a href="#preguntas">{copy('Preguntas', 'FAQs')}</a>
+      </nav>
+      <div class="actions">
+        <a href={english ? '/v4/' : '/v4/en/'} lang={english ? 'es' : 'en'} aria-label={english ? 'Español' : 'English'}>{english ? 'ES' : 'EN'}</a>
+        <a class="button dark" href="#contacto">{copy('Contacto', 'Contact')}</a>
+      </div>
+    </header>
+    <main id="contenido">
+      <section class="hero">
+        <Image src={family} alt={copy('Un padre carga a su hija a la luz de la tarde.', 'A father carries his daughter in the afternoon light.')} widths={[480, 768, 1080, 1600]} sizes="100vw" loading="eager" fetchpriority="high" />
+        <div class="hero-inner wrap">
+          <div class="hero-copy">
+            <p class="eyebrow">{copy('Asesoría en seguros y retiro', 'Insurance & retirement advice')}</p>
+            <h1><span>{copy('Tu seguro,', 'Insurance,')}</span><span><em>{copy('con alguien','with someone')}</em></span><span>{copy('a tu lado.', 'by your side.')}</span></h1>
+            <p class="lead">{copy('Protege la salud de tu familia y planea tu retiro con la asesoría personal de RB y Asociados.', 'Care for your family’s health and plan your retirement with personal guidance from RB y Asociados.')}</p>
+            <a class="button light" href={consultation}><Icon name="whatsapp" size={18}/>{talk}</a>
+          </div>
+          <a class="scroll" href="#acompanamiento"><span aria-hidden="true">↓</span>{copy('Descubre cómo te acompañamos', 'Explore our approach')}</a>
+        </div>
+      </section>
+      <section class="insurers wrap" aria-labelledby="insurers-title">
+        <h2 id="insurers-title">{copy('Aseguradoras con las que trabaja RB', 'Insurers RB works with')}</h2>
+        <ul>{shared.insurers.map(name=><li>{name}</li>)}</ul>
+      </section>
+      <section class="guidance" id="acompanamiento"><div class="wrap section columns">
+        <div><p class="eyebrow">{copy('Acompañamiento', 'Guidance')}</p>
+          <h2>{copy('Contratar es solo','Signing up is just')} <em>{copy('el principio.', 'the beginning.')}</em></h2>
+        </div>
+        <div class="moments">{t.moments.items.map(m=><details name="moments" open={m.key==='antes'}><summary>{m.kicker}</summary><p>{m.text}</p></details>)}</div>
+      </div></section>
+      <section class="wrap section" id="soluciones">
+        <p class="eyebrow">{services}</p>
+        <h2>{copy('¿Qué quieres proteger?', 'What matters to you?')}</h2>
+        <div class="cards">
+          {[{s:t.services.medical, img:medical, alt:copy('Una hija abrocha el puño de la blusa de su madre.', 'A daughter buttons her mother’s cuff.')}, {s:t.services.retirement, img:retirement, alt:copy('Una pareja pasea frente al Pacífico al amanecer.', 'A couple walks along the Pacific at dawn.')}].map(({s,img,alt}) => (
+            <a href={t.waFor(s.tema)} class="card">
+              <div class="crop"><Image src={img} widths={[420,720,1000]} sizes="(max-width:680px) 92vw, 45vw" alt={alt} loading="lazy"/></div>
+              <h3>{s.kicker}</h3><p>{s.title}</p><span class="link">{s.cta}</span>
+            </a>
+          ))}
+        </div>
+        <div class="also"><strong>{copy('Otras consultas', 'Other enquiries')}</strong>{t.services.also.map(a=><a href={t.waFor(a.tema)}>{a.label}</a>)}</div>
+      </section>
+      <section class="firm" id="firma"><div class="wrap section columns">
+        <figure class="portrait">
+          {portrait ? <Image src={portrait} alt="Víctor Robles" widths={[400,720]} sizes="(max-width:680px) 88vw, 36vw"/> : <Logo variant="mark" tone="light"/>}
+          <figcaption>Víctor Robles · RB y Asociados</figcaption>
+        </figure>
+        <div><p class="eyebrow">{firm}</p><h2>Víctor <em>Robles.</em></h2>
+          <p>{t.victor.lead}</p><p class="credential">{t.victor.cred}</p>
+          <dl class="facts">{t.victor.facts.slice(0,2).map(f=><div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl>
+          <a class="link" href={consultation}>{copy('Hablar con Víctor', 'Talk to Víctor')}</a>
+          <ul class="networks" aria-label={t.victor.socialsLabel}>{shared.socials.map(s=><li>{s.url ? <a href={s.url}><Icon name={s.icon} size={17}/>{s.name}</a> : <span><Icon name={s.icon} size={17}/>{s.name}</span>}</li>)}</ul>
+        </div>
+      </div></section>
+      <section class="wrap section columns" id="preguntas">
+        <div><p class="eyebrow">{t.faq.kicker}</p><h2>{copy('Antes de decidir.', 'Before you decide.')}</h2></div>
+        <div>{t.faq.items.map(f=><details name="faq"><summary>{f.q}</summary><p>{f.a}</p></details>)}</div>
+      </section>
+    </main>
+    <footer id="contacto"><div class="wrap section">
+      <p class="eyebrow">{copy('Contacto directo', 'Direct contact')}</p>
+      <h2>{copy('¿Lo platicamos?', 'Shall we talk?')}</h2>
+      <div class="contacts"><a class="button light" href={consultation}><Icon name="whatsapp" size={18}/>WhatsApp · {shared.phoneDisplay}</a><a class="link" href={`mailto:${shared.email}`}>{shared.email}</a></div>
+      <p class="cities">{shared.cities.join(' · ')}</p>
+      <div class="foot"><Logo tone="light"/><small>{t.footer}</small></div>
+    </div></footer>
+    <script>
+      if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const observer = new IntersectionObserver(entries => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            entry.target.classList.add('arrived');
+            observer.unobserve(entry.target);
+          }
+        }, {threshold: 0.12});
+        document.querySelectorAll('.insurers li,.guidance h2,.card,.portrait,.facts,#preguntas h2').forEach(el => observer.observe(el));
+      }
+    </script>
+  </body>
+</html>
