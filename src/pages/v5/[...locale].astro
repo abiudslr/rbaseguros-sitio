@@ -1,0 +1,347 @@
+---
+import { Image } from 'astro:assets';
+import '@fontsource-variable/source-sans-3/wght.css';
+import '@fontsource/dm-serif-text/latin-400.css';
+import '../../styles/v5.css';
+import { content, shared } from '../../i18n/content';
+import Logo from '../../components/Logo.astro';
+import Icon from '../../components/Icon.astro';
+import family from '../../assets/v4/patio.webp';
+import medical from '../../assets/v4/cuidado.webp';
+import retirement from '../../assets/v4/pacifico.webp';
+import life from '../../assets/v4/vida.webp';
+import school from '../../assets/v4/educacion.webp';
+import business from '../../assets/v4/empresas.webp';
+import car from '../../assets/v4/autos.webp';
+
+const insurers: [string, string][] = [
+  ['GNP Seguros', 'gnp.svg'], ['MetLife', 'metlife.svg'],
+  ['Seguros Monterrey New York Life', 'monterrey.webp'], ['Insignia Life', 'insignia.svg'],
+  ['Bupa', 'bupa.svg'], ['Quálitas', 'qualitas.svg'],
+  ['ANA Seguros', 'ana.svg'], ['Prevem Seguros', 'prevem.webp'],
+];
+// Dos filas para el carrusel: la segunda en otro orden para que nunca coincidan los logos.
+const rows = [insurers, [...insurers.slice(4), ...insurers.slice(0, 4)].reverse()];
+const portraits = import.meta.glob<{ default: ImageMetadata }>('../../assets/v4/victor.*', { eager: true });
+const portrait = Object.values(portraits)[0]?.default;
+
+export function getStaticPaths() {
+  return [{ params: { locale: undefined } }, { params: { locale: 'en' } }];
+}
+const english = Astro.params.locale === 'en';
+const t = content[english ? 'en' : 'es'];
+const copy = (es: string, en: string) => english ? en : es;
+const firm = copy('La firma', 'The firm');
+const services = copy('Soluciones', 'Services');
+const talk = copy('Solicitar asesoría', 'Book a consultation');
+const consultation = t.waFor(copy('una primera asesoría', 'an initial consultation'));
+const solutions = [
+  { label: t.services.medical.kicker, topic: t.services.medical.tema, img: medical, text: copy('Red hospitalaria, deducible y cobertura para tu familia.', 'Hospital networks, deductibles and coverage for your family.') },
+  { label: t.services.retirement.kicker, topic: t.services.retirement.tema, img: retirement, text: copy('Un plan de aportaciones que puedas sostener.', 'A contribution plan you can maintain over time.') },
+  { label: copy('Seguro de vida', 'Life insurance'), topic: copy('seguro de vida', 'life insurance'), img: life, text: copy('Respaldo económico para quienes dependen de ti.', 'Financial support for the people who depend on you.') },
+  { label: copy('Ahorro para la educación', 'Education savings'), topic: copy('ahorro para la educación', 'education savings'), img: school, text: copy('Una meta de ahorro para los estudios de tus hijos.', 'A savings goal for your children’s education.') },
+  { label: copy('Empresas', 'Business'), topic: copy('seguros para empresas', 'business insurance'), img: business, text: copy('Protección para tu negocio y las personas clave.', 'Protection for your business and its key people.') },
+  { label: copy('Autos', 'Auto insurance'), topic: copy('seguro de auto', 'auto insurance'), img: car, text: copy('Coberturas y deducibles para tu forma de manejar.', 'Coverage and deductibles for the way you drive.') },
+];
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<!doctype html>
+<html lang={t.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#202e64" />
+    <meta name="robots" content="noindex" />
+    <meta name="description" content={t.description} />
+    <link rel="icon" href="/favicon.svg" />
+    <title>RB y Asociados · {copy('Seguros y retiro', 'Insurance and retirement')}</title>
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body id="inicio">
+    <div class="progress" aria-hidden="true"></div>
+    <a class="skip" href="#contenido">{t.skip}</a>
+    <header class="mast">
+      <div class="wrap mast-inner">
+        <a class="brand" href="#inicio" aria-label={t.homeLabel}><Logo /></a>
+        <nav aria-label={t.navLabel}>
+          <a href="#acompanamiento">{copy('Acompañamiento','Guidance')}</a><a href="#soluciones">{services}</a><a href="#firma">{firm}</a><a href="#preguntas">{copy('Preguntas', 'FAQs')}</a>
+        </nav>
+        <div class="actions">
+          <a class="lang" href={english ? '/v5/' : '/v5/en/'} lang={english ? 'es' : 'en'} aria-label={english ? 'Español' : 'English'}>{english ? 'ES' : 'EN'}</a>
+          <a class="button dark" href="#contacto"><span>{copy('Contacto', 'Contact')}</span></a>
+        </div>
+      </div>
+    </header>
+
+    <main id="contenido">
+      <section class="hero">
+        <div class="hero-media" data-parallax>
+          <Image src={family} alt={copy('Un padre carga a su hija a la luz de la tarde.', 'A father carries his daughter in the afternoon light.')} widths={[480, 768, 1080, 1600, 2000]} sizes="100vw" loading="eager" fetchpriority="high" />
+        </div>
+        <div class="hero-inner wrap">
+          <div class="hero-copy">
+            <p class="eyebrow light-eyebrow"><span class="dot"></span>{copy('Asesoría personal desde 1984', 'Personal advice since 1984')}</p>
+            <h1>
+              <span class="line"><span>{copy('Tu seguro,', 'Insurance,')}</span></span>
+              <span class="line"><span><em>{copy('con alguien','with someone')}</em></span></span>
+              <span class="line"><span>{copy('a tu lado.', 'by your side.')}</span></span>
+            </h1>
+            <p class="lead">{copy('Protege la salud de tu familia y planea tu retiro con la asesoría personal de RB y Asociados.', 'Care for your family’s health and plan your retirement with personal guidance from RB y Asociados.')}</p>
+            <a class="button light" href={consultation}><Icon name="whatsapp" size={18}/><span>{talk}</span><Icon class="arrow" name="arrow" size={16}/></a>
+          </div>
+          <a class="scroll" href="#acompanamiento"><span class="scroll-line" aria-hidden="true"></span>{copy('Descubre cómo te acompañamos', 'Explore our approach')}</a>
+        </div>
+      </section>
+
+      <section class="guidance" id="acompanamiento"><div class="wrap section columns">
+        <div>
+          <p class="eyebrow" data-reveal>{t.moments.kicker}</p>
+          <h2 data-reveal="lines"><span class="line"><span>{copy('Contratar es solo','Signing up is just')}</span></span> <span class="line"><span><em>{copy('el principio.', 'the beginning.')}</em></span></span></h2>
+        </div>
+        <div class="moments">
+          {t.moments.items.map((m, i) => (
+            <details name="moments" open={m.key === 'antes'} data-reveal style={`--d:${i * 90}ms`}>
+              <summary><span class="num">{pad(i + 1)}</span><span class="sum-label">{m.kicker}</span><span class="toggle" aria-hidden="true"></span></summary>
+              <div class="details-body">
+                <h3>{m.title}</h3>
+                <p>{m.text}</p>
+                {m.detail && <p class="detail"><Icon name="check" size={16}/>{m.detail}</p>}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div></section>
+
+      <section class="solutions section" id="soluciones">
+        <div class="wrap">
+          <div class="sol-head">
+            <div>
+              <p class="eyebrow" data-reveal>{services}</p>
+              <h2 data-reveal="lines"><span class="line"><span>{copy('¿Qué quieres', 'What matters')}</span></span> <span class="line"><span><em>{copy('proteger?', 'to you?')}</em></span></span></h2>
+            </div>
+            <p class="sol-intro" data-reveal>{copy('Seis caminos, una misma forma de trabajar: te explico, comparamos opciones y decides con calma.', 'Six paths, one way of working: I explain, we compare options and you decide calmly.')}</p>
+          </div>
+
+          <div class="explorer" data-explorer>
+            <div class="sol-list" role="tablist" aria-label={services} data-reveal>
+              {solutions.map(({ label }, i) => (
+                <button type="button" role="tab" id={`sol-tab-${i}`} aria-controls={`sol-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+                  <span class="num">{pad(i + 1)}</span>
+                  <span class="name">{label}</span>
+                  <Icon class="arrow" name="arrow" size={20}/>
+                  <span class="bar" aria-hidden="true"><i></i></span>
+                </button>
+              ))}
+            </div>
+            <div class="stage" data-reveal>
+              {solutions.map(({ label, topic, img, text }, i) => (
+                <article class:list={['panel', { 'is-active': i === 0 }]} role="tabpanel" id={`sol-panel-${i}`} aria-labelledby={`sol-tab-${i}`}>
+                  <div class="panel-media"><Image src={img} widths={[480, 800, 1200]} sizes="(max-width: 820px) 84vw, 56vw" alt="" loading={i === 0 ? 'eager' : 'lazy'}/></div>
+                  <div class="panel-copy">
+                    <span class="panel-num">{pad(i + 1)} / {pad(solutions.length)}</span>
+                    <h3>{label}</h3>
+                    <p>{text}</p>
+                    <a class="button light" href={t.waFor(topic)} aria-label={copy('Consultar por WhatsApp sobre ', 'Ask on WhatsApp about ') + label}><Icon name="whatsapp" size={17}/><span>{copy('Consultar', 'Enquire')}</span><Icon class="arrow" name="arrow" size={15}/></a>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <div class="sol-dots" aria-hidden="true">{solutions.map((_, i) => <span class:list={{ on: i === 0 }}></span>)}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="partners section" aria-labelledby="partners-title">
+        <div class="wrap partners-head">
+          <h2 id="partners-title" data-reveal="lines"><span class="line"><span>{copy('Comparo por ti entre', 'I compare on your behalf across')}</span></span> <span class="line"><span><em>{copy(`${insurers.length} aseguradoras.`, `${insurers.length} insurers.`)}</em></span></span></h2>
+          <p data-reveal>{copy('No dependes de una sola compañía: buscamos la opción que mejor se ajusta a lo que necesitas y a tu presupuesto.', 'You are not tied to a single company: we look for the option that best fits your needs and your budget.')}</p>
+        </div>
+        <div class="marquee" data-marquee data-reveal>
+          {rows.map((row, r) => (
+            <div class:list={['marquee-row', { reverse: r === 1 }]}>
+              <ul class="track">
+                {[0, 1].map(copyIndex => row.map(([name, file]) => (
+                  <li class:list={{ tall: ['bupa.svg', 'qualitas.svg', 'ana.svg'].includes(file) }} aria-hidden={copyIndex === 1 || r === 1 ? 'true' : undefined}>
+                    <img src={'/aseguradoras/' + file} alt={copyIndex === 0 && r === 0 ? name : ''} loading="lazy" decoding="async" draggable="false"/>
+                  </li>
+                )))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="firm" id="firma"><div class="wrap section columns">
+        <figure class="portrait" data-reveal="mask">
+          {portrait ? <Image src={portrait} alt="Víctor Robles" widths={[400,720]} sizes="(max-width:680px) 88vw, 36vw"/> : <Logo variant="mark" tone="light"/>}
+          <figcaption>Víctor Robles · RB y Asociados</figcaption>
+        </figure>
+        <div>
+          <p class="eyebrow light-eyebrow" data-reveal>{firm}</p>
+          <h2 data-reveal="lines"><span class="line"><span>Víctor <em>Robles.</em></span></span></h2>
+          <p data-reveal>{t.victor.lead}</p><p class="credential" data-reveal>{t.victor.cred}</p>
+          <dl class="facts" data-reveal>{t.victor.facts.map(f => <div><dt>{f.label}</dt><dd data-count={f.value}>{f.value}</dd></div>)}</dl>
+          <a class="link" href={consultation} data-reveal>{copy('Hablar con Víctor', 'Talk to Víctor')}<Icon class="arrow" name="arrow" size={16}/></a>
+          <ul class="networks" aria-label={t.victor.socialsLabel} data-reveal>{shared.socials.map(s=><li>{s.url ? <a href={s.url}><Icon name={s.icon} size={17}/>{s.name}</a> : <span><Icon name={s.icon} size={17}/>{s.name}</span>}</li>)}</ul>
+        </div>
+      </div></section>
+
+      <section class="wrap section columns" id="preguntas">
+        <div><p class="eyebrow" data-reveal>{copy('Preguntas frecuentes', 'FAQs')}</p><h2 data-reveal="lines"><span class="line"><span>{copy('Antes de decidir.', 'Before you decide.')}</span></span></h2></div>
+        <div>{t.faq.items.map((f, i) => <details name="faq" data-reveal style={`--d:${i * 70}ms`}><summary><span class="sum-label">{f.q}</span><span class="toggle" aria-hidden="true"></span></summary><div class="details-body"><p>{f.a}</p></div></details>)}</div>
+      </section>
+    </main>
+
+    <footer id="contacto"><div class="wrap section">
+      <p class="eyebrow light-eyebrow" data-reveal>{copy('Contacto', 'Contact')}</p>
+      <h2 data-reveal="lines"><span class="line"><span>{copy('¿Lo', 'Shall we')} <em>{copy('platicamos?', 'talk?')}</em></span></span></h2>
+      <div class="contacts" data-reveal><a class="button light" href={consultation}><Icon name="whatsapp" size={18}/><span>WhatsApp · {shared.phoneDisplay}</span><Icon class="arrow" name="arrow" size={16}/></a><a class="link" href={`mailto:${shared.email}`}>{shared.email}</a></div>
+      <p class="cities" data-reveal>{shared.cities.join(' · ')}</p>
+      <div class="foot"><Logo tone="light"/><small>{t.footer}</small></div>
+    </div></footer>
+
+    <script>
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const root = document.documentElement;
+
+      /* Revelado al hacer scroll */
+      const revealables = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (!reduce && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver(entries => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            // Los elementos con máscara (clip-path) se observan a través de su contenedor
+            const el = (e.target as HTMLElement).dataset.reveal === 'mask' ? e.target : e.target.querySelector(':scope > [data-reveal=mask]') ?? e.target;
+            el.classList.add('is-in');
+            io.unobserve(e.target);
+          }
+        }, { rootMargin: '0px 0px -10% 0px', threshold: 0.15 });
+        revealables.forEach(el => io.observe(el.dataset.reveal === 'mask' ? el.parentElement! : el));
+      } else {
+        revealables.forEach(el => el.classList.add('is-in'));
+      }
+
+      /* Cabecera: se compacta, se oculta al bajar y reaparece al subir; barra de progreso */
+      const header = document.querySelector<HTMLElement>('.mast')!;
+      const hero = document.querySelector<HTMLElement>('[data-parallax]');
+      let lastY = scrollY, ticking = false;
+      const onScroll = () => {
+        const y = scrollY;
+        header.classList.toggle('is-scrolled', y > 12);
+        header.classList.toggle('is-hidden', y > 420 && y > lastY && !header.contains(document.activeElement));
+        lastY = y;
+        const max = root.scrollHeight - innerHeight;
+        root.style.setProperty('--scroll', String(max > 0 ? y / max : 0));
+        if (hero && !reduce && y < innerHeight * 1.2) hero.style.transform = `translate3d(0, ${y * 0.18}px, 0)`;
+        ticking = false;
+      };
+      addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+      onScroll();
+
+      /* Explorador de soluciones */
+      const ex = document.querySelector<HTMLElement>('[data-explorer]');
+      if (ex) {
+        const tabs = [...ex.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+        const panels = [...ex.querySelectorAll<HTMLElement>('[role=tabpanel]')];
+        const stage = ex.querySelector<HTMLElement>('.stage')!;
+        const dots = [...ex.querySelectorAll<HTMLElement>('.sol-dots span')];
+        const desktop = matchMedia('(min-width: 821px)');
+        const DURATION = 7000;
+        let current = 0, elapsed = 0, last = 0, hovering = false, focused = false, visible = false;
+
+        const select = (n: number, focus = false) => {
+          const next = (n + tabs.length) % tabs.length;
+          if (next === current) { if (focus) tabs[next].focus(); return; }
+          ex.classList.toggle('back', next < current && !(current === tabs.length - 1 && next === 0));
+          void ex.offsetWidth;
+          panels.forEach((p, k) => {
+            p.classList.toggle('is-prev', k === current);
+            p.classList.toggle('is-active', k === next);
+          });
+          tabs.forEach((tab, k) => { tab.setAttribute('aria-selected', String(k === next)); tab.tabIndex = k === next ? 0 : -1; });
+          current = next; elapsed = 0;
+          ex.style.setProperty('--p', '0');
+          syncInert();
+          if (focus) tabs[next].focus();
+        };
+        const syncInert = () => panels.forEach((p, k) => { p.inert = desktop.matches && k !== current; });
+
+        tabs.forEach((tab, k) => {
+          tab.addEventListener('click', () => select(k));
+          tab.addEventListener('mouseenter', () => { if (matchMedia('(hover: hover)').matches) select(k); });
+          tab.addEventListener('keydown', e => {
+            const keys: Record<string, number> = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+            if (e.key in keys) { e.preventDefault(); select(current + keys[e.key], true); }
+            if (e.key === 'Home') { e.preventDefault(); select(0, true); }
+            if (e.key === 'End') { e.preventDefault(); select(tabs.length - 1, true); }
+          });
+        });
+        ex.addEventListener('mouseenter', () => hovering = true);
+        ex.addEventListener('mouseleave', () => hovering = false);
+        ex.addEventListener('focusin', () => focused = true);
+        ex.addEventListener('focusout', () => focused = ex.contains(document.activeElement));
+        new IntersectionObserver(([e]) => visible = e.isIntersecting, { threshold: 0.35 }).observe(ex);
+
+        // Autoavance con barra de progreso (solo escritorio, se pausa al interactuar)
+        if (!reduce) {
+          const loop = (time: number) => {
+            const dt = last ? Math.min(time - last, 100) : 0; last = time;
+            if (desktop.matches && visible && !hovering && !focused && !document.hidden) {
+              elapsed += dt;
+              ex.style.setProperty('--p', String(Math.min(elapsed / DURATION, 1)));
+              if (elapsed >= DURATION) select(current + 1);
+            }
+            requestAnimationFrame(loop);
+          };
+          requestAnimationFrame(loop);
+
+          // Ligero desplazamiento de la imagen con el cursor
+          stage.addEventListener('pointermove', e => {
+            const r = stage.getBoundingClientRect();
+            stage.style.setProperty('--mx', ((e.clientX - r.left) / r.width - .5).toFixed(3));
+            stage.style.setProperty('--my', ((e.clientY - r.top) / r.height - .5).toFixed(3));
+          });
+          stage.addEventListener('pointerleave', () => { stage.style.setProperty('--mx', '0'); stage.style.setProperty('--my', '0'); });
+        }
+
+        // Móvil: carrusel deslizable con indicador
+        const dotObserver = new IntersectionObserver(entries => {
+          for (const e of entries) if (e.isIntersecting) {
+            const k = panels.indexOf(e.target as HTMLElement);
+            dots.forEach((d, j) => d.classList.toggle('on', j === k));
+          }
+        }, { root: stage, threshold: 0.6 });
+        panels.forEach(p => dotObserver.observe(p));
+
+        desktop.addEventListener('change', syncInert);
+        syncInert();
+      }
+
+      /* Carrusel de aseguradoras: solo corre cuando está en pantalla */
+      const marquee = document.querySelector<HTMLElement>('[data-marquee]');
+      if (marquee) new IntersectionObserver(([e]) => marquee.classList.toggle('running', e.isIntersecting)).observe(marquee);
+
+      /* Contador para cifras (no años) */
+      if (!reduce) {
+        const counters = document.querySelectorAll<HTMLElement>('[data-count]');
+        const co = new IntersectionObserver(entries => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            co.unobserve(e.target);
+            const el = e.target as HTMLElement;
+            const m = (el.dataset.count || '').match(/^(\d+)(\D*)$/);
+            if (!m || Number(m[1]) >= 1900) continue;
+            const end = Number(m[1]), suffix = m[2], t0 = performance.now(), dur = 1600;
+            const step = (now: number) => {
+              const k = Math.min((now - t0) / dur, 1), eased = 1 - Math.pow(1 - k, 4);
+              el.textContent = Math.round(end * eased) + suffix;
+              if (k < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+          }
+        }, { threshold: 0.6 });
+        counters.forEach(c => co.observe(c));
+      }
+    </script>
+  </body>
+</html>
