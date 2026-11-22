@@ -1,0 +1,308 @@
+---
+// v6: la v5 reconstruida con tasteskill (design-taste-frontend 2.5). El kit vive en /public/assets.
+import { getImage } from 'astro:assets';
+import { content, shared } from '../../i18n/content';
+import { v5 } from '../../i18n/v5';
+import heroImg from '../../assets/v4/patio.webp';
+import medical from '../../assets/v4/cuidado.webp';
+import retirement from '../../assets/v4/pacifico.webp';
+import life from '../../assets/v4/vida.webp';
+import school from '../../assets/v4/educacion.webp';
+import business from '../../assets/v4/empresas.webp';
+import car from '../../assets/v4/autos.webp';
+import before from '../../assets/photos/antes-pareja-papeles.jpg';
+import during from '../../assets/photos/durante-hospital-manos.jpg';
+import renewal from '../../assets/photos/renovacion-pareja-mayor.jpg';
+import doctor from '../../assets/photos/medico-abuelo-bebe.jpg';
+import family from '../../assets/photos/cierre-familia-mesa.jpg';
+import logoRaw from '../../../public/brand/rb-asociados-horizontal.svg?raw';
+
+export function getStaticPaths() {
+  return [{ params: { locale: undefined } }, { params: { locale: 'en' } }];
+}
+const english = Astro.params.locale === 'en';
+const t = content[english ? 'en' : 'es'];
+const v = v5[english ? 'en' : 'es'];
+const copy = (es: string, en: string) => (english ? en : es);
+
+const img = async (src: ImageMetadata, width: number) => (await getImage({ src, width, format: 'webp' })).src;
+// srcset responsivo: el teléfono descarga la versión chica
+const set = async (src: ImageMetadata, widths: number[]) => (await getImage({ src, widths, format: 'webp' })).srcSet.attribute;
+
+// El logo del cliente, en línea y sin <title> (el enlace lleva el nombre).
+const logo = (tone: 'dark' | 'light') => {
+  let svg = logoRaw.replace(/<title>.*?<\/title>/, '').replace(/role="img"/, 'aria-hidden="true"').replace(/ width="\d+" height="\d+"/, '');
+  if (tone === 'light') svg = svg.replaceAll('#202E64', '#FFF5EA');
+  return svg.replaceAll('rb-accent', `rb-accent-${tone}`);
+};
+
+const primary = copy('Solicitar asesoría', 'Book a consultation');
+const consultation = t.waFor(copy('una primera asesoría', 'an initial consultation'));
+const mail = `mailto:${shared.email}`;
+
+const services = [
+  { id: 'gastos-medicos', name: copy('Gastos médicos mayores', 'Major medical insurance'), line: copy('Red de hospitales, deducible y coaseguro.', 'Hospital network, deductible and coinsurance.'), src: await img(medical, 1200), alt: copy('Una doctora revisa a un paciente en el consultorio.', 'A doctor examines a patient in the consulting room.') },
+  { id: 'retiro', name: copy('Ahorro para el retiro', 'Retirement savings'), line: copy('Meta, plazo y una aportación que puedas sostener.', 'A goal, a term and a contribution you can keep up.'), src: await img(retirement, 1200), alt: copy('Una pareja mayor camina junto al mar.', 'An older couple walks by the sea.') },
+  { id: 'vida', name: copy('Seguro de vida', 'Life insurance'), line: copy('Respaldo para quienes dependen de ti.', 'Support for the people who depend on you.'), src: await img(life, 960), alt: copy('Una familia comparte la mesa en casa.', 'A family shares a meal at home.') },
+  { id: 'educacion', name: copy('Ahorro para la educación', 'Education savings'), line: copy('Ahorro según cuándo y cuánto necesitarás.', 'Savings set by when and how much you need.'), src: await img(school, 960), alt: copy('Una niña con mochila camino a la escuela.', 'A girl with a backpack on her way to school.') },
+  { id: 'empresas', name: copy('Empresas', 'Business'), line: copy('Salud, vida y autos para tu negocio.', 'Health, life and auto cover for your business.'), src: await img(business, 960), alt: copy('Un equipo de trabajo en una oficina.', 'A team at work in an office.') },
+  { id: 'autos', name: copy('Autos', 'Auto insurance'), line: copy('Coberturas y deducibles para tu auto.', 'Coverage and deductibles for your car.'), src: await img(car, 960), alt: copy('Un auto estacionado frente a una casa.', 'A car parked in front of a house.') },
+];
+
+const steps = [
+  { title: copy('Antes de contratar, comparamos opciones', 'Before you sign, we compare options'), text: copy('Te explicamos qué cubre cada opción, qué no y cómo encaja en tu presupuesto: deducible, coaseguro y suma asegurada en lenguaje sencillo.', 'We explain what each option covers, what it doesn’t and how it fits your budget: deductible, coinsurance and sum insured in plain words.'), src: await img(before, 1200), w: 1800, h: 1013, alt: copy('Una pareja revisa papeles en la mesa de su casa.', 'A couple reviews papers at their kitchen table.') },
+  { title: copy('Te guiamos en una hospitalización', 'We guide you through a hospital stay'), text: copy('Si usas tu seguro médico, te decimos cuál es el siguiente paso y damos seguimiento a tu trámite de reembolso.', 'If you use your health insurance, we tell you the next step and follow up on your reimbursement claim.'), src: await img(during, 800), w: 1800, h: 2700, alt: copy('Dos manos se sostienen junto a una cama de hospital.', 'Two hands held together beside a hospital bed.') },
+  { title: copy('En cada renovación, revisamos tu póliza', 'At every renewal, we review your policy'), text: copy('Vemos qué cubre y cuánto pagas. Si tu vida cambió, ajustamos tu protección. Si ya tienes una póliza, también la revisamos.', 'We look at what it covers and what you pay. If your life changed, we adjust your cover. If you already have a policy, we review that too.'), src: await img(renewal, 1200), w: 1800, h: 1013, alt: copy('Una pareja mayor conversa en la sala de su casa.', 'An older couple talks in their living room.') },
+];
+
+const heroSrc = await img(heroImg, 1774);
+const heroSet = await set(heroImg, [480, 800, 1200, 1774]);
+const stepSets = await Promise.all([before, during, renewal].map(s => set(s, [400, 800, 1200].filter(w => w <= s.width))));
+const serviceSets = await Promise.all([medical, retirement, life, school, business, car].map(s => set(s, [400, 640, 960].filter(w => w <= s.width))));
+const familySet = await set(family, [640, 960, 1400]);
+const faqSet = await set(doctor, [400, 640, 1000]);
+const faqSrc = await img(doctor, 1000);
+// Las tres dudas de la v5; la segunda respuesta, más corta para que la sección quepa en una pantalla.
+const faq = v.faq.slice(0, 3).map((f, i) => i !== 1 ? f : { q: f.q, a: copy(
+  'La prima (el precio del seguro) cambia según tu edad, la suma asegurada, el deducible, el coaseguro y las coberturas que elijas. El deducible es lo que pagas antes de que la póliza cubra; el coaseguro, la parte de los gastos cubiertos que te toca pagar.',
+  'The premium (the price of the insurance) depends on your age, the sum insured, the deductible, the coinsurance and the coverages you choose. The deductible is what you pay before the policy covers; coinsurance is your share of covered costs.') });
+const familySrc = await img(family, 1400);
+const other = english ? { href: '/v6/', label: 'Español', lang: 'es' } : { href: '/v6/en/', label: 'English', lang: 'en' };
+const title = copy('RB y Asociados: asesoría en seguros médicos y retiro', 'RB y Asociados: health insurance and retirement advice');
+const description = copy(
+  'Víctor Robles te ayuda a elegir tu seguro de gastos médicos mayores o tu plan de retiro y te acompaña en cada renovación. Atención en CDMX, Puebla, Guadalajara y Monterrey.',
+  'Víctor Robles helps you choose your health insurance or retirement plan and stays with you at every renewal. Serving Mexico City, Puebla, Guadalajara and Monterrey.',
+);
+const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg>';
+---
+<!doctype html>
+<html lang={english ? 'en' : 'es'} data-type="service" data-radius="soft" data-buttons="tonal" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>{title}</title>
+<meta name="description" content={description}>
+<meta property="og:type" content="website">
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:image" content="/v6/share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/brand/rb-asociados-favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#fff5ea">
+<!-- <link rel="canonical" href="https://rbaseguros.com.mx/"> -->
+<link rel="alternate" hreflang={other.lang} href={other.href}>
+<meta name="site-kind" content="other">
+<meta name="page-type" content="service">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400..700&family=Libre+Franklin:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/system.css">
+<link rel="stylesheet" href="/assets/ui/cards.css">
+<link rel="stylesheet" href="/assets/motion/motion.css">
+<link rel="stylesheet" href="/assets/layout/layout.css">
+<link rel="stylesheet" href="/assets/icons/icon.css">
+<style is:inline>
+:root {
+  --p-bg: #fff5ea; --p-surface: #f2eae3; --p-ink: #202e64; --p-muted: #5a678d;
+  --p-accent: #d25b21; --p-accent-ink: #111111; --p-action: #d25b21; --p-action-ink: #111111;
+  --p-inv-bg: #202e64; --p-inv-surface: #2d3b6e; --p-inv-ink: #fff5ea; --p-inv-muted: #a9acbc;
+  --p-inv-accent: #d25b21; --p-inv-accent-ink: #111111; --p-inv-action: #d25b21; --p-inv-action-ink: #111111;
+  --font-display: "Source Serif 4", Georgia, serif;
+  --font-text: "Libre Franklin", system-ui, sans-serif;
+  --display-weight: 400;
+  --display-tracking: -0.02em;
+  --display-tracking-xl: -0.026em;
+}
+</style>
+<script is:inline>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script is:inline>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="/assets/moments/moments.js">
+<link rel="modulepreload" href="/assets/moments/lib.js">
+<link rel="modulepreload" href="/assets/moments/pinned-chapters/moment.js">
+<link rel="modulepreload" href="/assets/moments/word-highlight/moment.js">
+<style is:inline>
+  /* page CSS: el logo del cliente en la barra y el pie; el monograma en el marco de Víctor */
+  .nav__logo .rb-logo { display: block; width: 168px; line-height: 0; }
+  .nav__logo .rb-logo svg { width: 100%; height: auto; display: block; }
+  .footer .nav__logo .rb-logo { width: 240px; }
+  .advisor-photo { height: min(600px, calc(100svh - 240px)); }
+  .faq-photo { height: min(640px, calc(100svh - 240px)); } .faq-photo .frame__img { object-position: 50% 35%; }
+  .socials-row { display: flex; gap: var(--s-5); flex-wrap: wrap; }
+  .socials-row a { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; }
+  .socials-row img { width: 20px; height: 20px; }
+  /* bajo 1024 el hero pone las palabras en el fondo claro, bajo la foto: tinta de la página, no blanco */
+  @media (max-width: 1023px) { .hero--photo[data-box="none"][data-tone="dark"] { --ink: var(--p-ink); --muted: var(--p-muted); color: var(--p-ink); } .advisor-photo { height: 420px; } .faq-photo { aspect-ratio: auto; height: 180px; } #coberturas .frame--fill { flex: none; height: 160px; } }
+  @media (min-width: 640px) and (max-width: 1023px) { #acompanamiento .mo-pc__visual img { aspect-ratio: 16 / 9; height: auto; object-fit: cover; } }
+  @media (max-width: 639px) { main > #acompanamiento:not(.is-live) { min-height: 200lvh; } main > #acompanamiento:not(.is-live) .mo-pc__visual > img { aspect-ratio: 4 / 3; max-height: none; } .advisor-photo { height: 200px; } .faq-photo { aspect-ratio: auto; height: 570px; } .nav__logo .rb-logo { width: 136px; } .footer .nav__logo .rb-logo { width: 160px; } }
+</style>
+</head>
+<body>
+<!-- type: service (asesoría en seguros; site-kind other)
+     deal: hero photo (patio.webp, data-box none, dark calm side), nav nav-mega, close close-type, footer footer-dark,
+     rhythm dark-band (#victor), buttons tonal, mark: client logo, grounds none
+     palette: client brand via start.mjs brand (marfil #FFF5EA, índigo #202E64, naranja #D25B21); type source-serif
+     moments: pinned-chapters (#acompanamiento), word-highlight (#aseguradoras) -->
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">{t.skip}</a>
+    <a class="nav__logo" href="#top" aria-label={t.homeLabel}><span class="rb-logo" set:html={logo('dark')}></span></a>
+    <nav class="nav__links" aria-label={t.navLabel}>
+      <div class="nav__item">
+        <a class="nav__link" href="#coberturas">{copy('Coberturas', 'Coverage')} <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3">
+              <p class="t-label">{copy('Salud y retiro', 'Health and retirement')}</p>
+              {services.slice(0, 2).map(s => <a href={`#${s.id}`}>{s.name}<span>{s.id === 'retiro' ? copy('Meta, plazo y aportación', 'Goal, term and contribution') : copy('Deducible y coaseguro', 'Deductible and coinsurance')}</span></a>)}
+            </div>
+            <div class="menu-col span-3">
+              <p class="t-label">{copy('Familia y negocio', 'Family and business')}</p>
+              <a href="#vida">{services[2].name}<span>{copy('Respaldo para tu familia', 'Support for your family')}</span></a>
+              <a href="#educacion">{services[3].name}<span>{copy('Los estudios de tus hijos', 'Your children’s studies')}</span></a>
+              <a href="#empresas">{services[4].name}<span>{copy('Tu negocio y su gente', 'Your business and its people')}</span></a>
+              <a href="#autos">{services[5].name}<span>{copy('Tu auto y tu deducible', 'Your car and deductible')}</span></a>
+            </div>
+            <a class="menu-card span-3 start-10" href="#acompanamiento">
+              <div class="panel"><img class="frame__img" src={steps[1].src} alt={steps[1].alt} width="1800" height="2700" loading="lazy"></div>
+              <span class="t-card">{copy('Apoyo en hospitalización', 'Hospital stay support')}</span>
+              <span class="t-small muted">{copy('Seguimiento a tu reembolso', 'Follow-up on your claim')}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#acompanamiento">{copy('Método', 'Method')}</a></div>
+      <div class="nav__item"><a class="nav__link" href="#aseguradoras">{copy('Aseguradoras', 'Insurers')}</a></div>
+      <div class="nav__item"><a class="nav__link" href="#victor">Víctor</a></div>
+      <div class="nav__item"><a class="nav__link" href="#faq">{copy('Preguntas', 'Questions')}</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href={consultation}>{primary}</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label={copy('Menú', 'Menu')}>
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero hero--photo" data-enter data-calm="left" data-box="none" data-tone="dark" aria-labelledby="hero-h">
+    <img class="hero__bg" src={heroSrc} srcset={heroSet} sizes="(max-width: 1023px) 200vw, max(100vw, 200vh)" alt={copy('Un padre carga a su hija en el patio de su casa, a la luz de la tarde.', 'A father carries his daughter in their courtyard in the afternoon light.')} style="--ly-pos: 70% 50%; --ly-pos-phone: 78% 40%" fetchpriority="high" width="1774" height="887">
+    <div class="wrap"><div class="hero-text">
+      <div class="hero__text">
+        <h1 id="hero-h">{copy('Asesoría en seguros y retiro', 'Insurance and retirement advice')}</h1>
+        <p class="hero__lead">{copy('Víctor Robles te ayuda a elegir tu seguro médico o tu plan de retiro y te acompaña en cada renovación. Agente desde 1984.', 'Víctor Robles helps you choose your health insurance or retirement plan and stays with you at every renewal. An agent since 1984.')}</p>
+        <div class="btn-row"><a class="btn btn--primary" href={consultation}>{primary}<Fragment set:html={arrow} /></a><a class="btn btn--secondary" href="#coberturas">{copy('Ver coberturas', 'See coverage')}</a></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- pinned-chapters: el método en tres momentos, una foto por paso -->
+  <section class="section" id="acompanamiento" style="--h: 2; --hm: 2" data-moment="pinned-chapters" aria-labelledby="acomp-h">
+    <div class="wrap mo-pc__grid">
+      <div class="mo-pc__text">
+        <h2 id="acomp-h">{copy('El acompañamiento, de la firma al reembolso', 'Our support, from signing to reimbursement')}</h2>
+        <ol class="mo-pc__steps">
+          {steps.map((s, i) => (
+            <li class="mo-pc__step">
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+              <figure class="mo-pc__visual"><img src={s.src} srcset={stepSets[i]} sizes="(max-width: 1023px) 90vw, 45vw" alt={s.alt} width={s.w} height={s.h} loading="lazy" decoding="async"></figure>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div class="mo-pc__visuals frame"></div>
+    </div>
+  </section>
+
+  <section class="section" id="coberturas" style="--hm: 2" aria-labelledby="cob-h">
+    <div class="wrap">
+      <div class="section-head"><h2 id="cob-h">{copy('Seguros que asesoramos', 'Insurance we advise on')}</h2><p>{copy('Gastos médicos mayores y retiro son el centro del despacho.', 'Major medical insurance and retirement are the core of the firm.')}</p></div>
+      <div class="grid grid--top fill" data-peek>
+        <ul class="rows span-6">
+          {services.map(s => <li id={s.id} data-peek-to={s.id} tabindex="0"><span class="rows__name">{s.name}</span><p>{s.line}</p></li>)}
+        </ul>
+        <div class="frame frame--photo frame--fill span-6 start-7">
+          {services.map((s, i) => <img class="frame__img" data-peek-for={s.id} src={s.src} srcset={serviceSets[i]} sizes="(max-width: 1023px) 90vw, 75vw" alt={s.alt} width="960" height="640" loading="lazy" decoding="async" hidden={i > 0}>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- word-highlight: una frase de 12 a 40 palabras, la palabra fuerte en <strong> -->
+  <section class="section statement" id="aseguradoras" data-moment="word-highlight" aria-label={copy('Aseguradoras', 'Insurers')}>
+    <div class="wrap">
+      <p class="t-label">{copy('Aseguradoras', 'Insurers')}</p>
+      {english
+        ? <p class="mo-wh__text">We are not tied to one insurer. We compare plans from GNP, MetLife, Seguros Monterrey New York Life, Insignia Life, Bupa, Quálitas, ANA and Prevem, and recommend the one that fits <strong>your budget</strong>.</p>
+        : <p class="mo-wh__text">No dependemos de una sola aseguradora. Comparamos planes de GNP, MetLife, Seguros Monterrey New York Life, Insignia Life, Bupa, Quálitas, ANA y Prevem, y te recomendamos el que encaja con <strong>tu presupuesto</strong>.</p>}
+    </div>
+  </section>
+
+  <section class="section ground-inverse" id="victor" aria-labelledby="victor-h">
+    <div class="wrap grid grid--top">
+      <div class="span-5 stack-5">
+        <h2 id="victor-h">{copy('Víctor Robles, asesor desde 1984', 'Víctor Robles, an advisor since 1984')}</h2>
+        <p class="t-lead">{t.victor.lead}</p>
+        <p>{copy('En 2003 fundó RB y Asociados. Cada póliza la emite la aseguradora; nosotros te ayudamos a llegar con la información clara.', 'He founded RB y Asociados in 2003. The insurer issues each policy; we help you get there with clear information.')}</p>
+        <div class="socials-row">
+          {shared.socials.map(s => <a class="link" href={s.url} target="_blank" rel="noopener"><img src={`/assets/icons/${s.icon}.svg`} loading="lazy" alt="" width="20" height="20" class={s.icon === 'instagram' ? 'ic-ink' : undefined}>{s.name}</a>)}
+        </div>
+      </div>
+      <!-- client slot: retrato de Víctor (4:5) cuando lo envíe; mientras tanto, una familia a la mesa (Unsplash). -->
+      <div class="frame frame--photo span-6 start-7 advisor-photo"><img class="frame__img" src={familySrc} srcset={familySet} sizes="(max-width: 1023px) 100vw, 64vw" loading="lazy" alt={copy('Una familia platica en la mesa de su casa.', 'A family talks at their dining table.')} decoding="async" width="1800" height="1200"></div>
+    </div>
+  </section>
+
+  <section class="section" id="faq" style="--hm: 2" aria-labelledby="faq-h">
+    <div class="wrap grid grid--top">
+      <div class="span-5 stack-5">
+        <h2 id="faq-h">{copy('Preguntas antes de contratar', 'Questions before you sign')}</h2>
+        <div class="faq">
+          {faq.map(f => <div class="faq__item"><h3>{f.q}</h3><p>{f.a}</p></div>)}
+        </div>
+      </div>
+      <div class="frame frame--photo span-6 start-7 faq-photo"><img class="frame__img" src={faqSrc} srcset={faqSet} sizes="(max-width: 1023px) 90vw, 45vw" alt={copy('Un médico revisa a un bebé en brazos de su abuelo.', 'A doctor checks a baby held by its grandfather.')} width="1800" height="2700" loading="lazy"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--dark ground-inverse g2m" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head">
+        <h2 id="close-h">{copy('Tu primera asesoría, por WhatsApp', 'Your first consultation, on WhatsApp')}</h2>
+        <p>{copy('Cuéntanos qué tema te interesa y si tienes o has tenido un seguro.', 'Tell us what you are interested in and whether you have or have had insurance.')}</p>
+      </div>
+      <a class="btn btn--primary btn--xl btn--wide" href={consultation}>{primary}<Fragment set:html={arrow} /></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="#top" aria-label={t.homeLabel}><span class="rb-logo" set:html={logo('light')}></span></a>
+          <p class="footer__lede">{copy('Asesoría en seguros y retiro en CDMX, Puebla, Guadalajara y Monterrey.', 'Insurance and retirement advice in Mexico City, Puebla, Guadalajara and Monterrey.')}</p>
+        </div>
+        <div class="span-2 footer__col"><h3>{copy('Coberturas', 'Coverage')}</h3><ul><li><a href="#gastos-medicos">{copy('Gastos médicos', 'Medical')}</a></li><li><a href="#retiro">{copy('Retiro', 'Retirement')}</a></li><li><a href="#vida">{copy('Vida', 'Life')}</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>{copy('Despacho', 'Firm')}</h3><ul><li><a href="#acompanamiento">{copy('Método', 'Method')}</a></li><li><a href="#aseguradoras">{copy('Aseguradoras', 'Insurers')}</a></li><li><a href="#victor">Víctor Robles</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>{copy('Contacto', 'Contact')}</h3><ul><li><a href={consultation}>WhatsApp</a></li><li><a href={mail}>{copy('Correo', 'Email')}</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>{copy('Redes', 'Social')}</h3><ul>{shared.socials.map(s => <li><a href={s.url} target="_blank" rel="noopener">{s.name}</a></li>)}</ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 RB y Asociados</span>
+        <a href={other.href} lang={other.lang} hreflang={other.lang}>{other.label}</a>
+        <details class="credits"><summary>{copy('Fotografías vía Unsplash', 'Photographs via Unsplash')}</summary><p>{copy('Fotografías del proceso con Licencia Unsplash. Los nombres de las aseguradoras son marcas de sus dueños.', 'Process photographs under the Unsplash License. Insurer names are trademarks of their owners.')}</p></details>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<nav class="actionbar" aria-label={copy('Acción rápida', 'Quick action')}>
+  <a class="btn btn--primary" href={consultation}>{primary}</a>
+</nav>
+
+<script is:inline type="module" src="/assets/system.js"></script>
+<script is:inline type="module" src="/assets/motion/motion.js"></script>
+<script is:inline type="module" src="/assets/layout/layout.js"></script>
+</body>
+</html>
