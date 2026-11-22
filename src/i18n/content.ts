@@ -1,9 +1,10 @@
+import { u } from '../data/url';
 // Textos de la landing v2 en español e inglés.
 // Para editar un texto, cámbialo en ambos idiomas.
 
 export type Lang = 'es' | 'en';
 export const langs: Lang[] = ['es', 'en'];
-export const langPath: Record<Lang, string> = { es: '/', en: '/en/' };
+export const langPath: Record<Lang, string> = { es: u('/'), en: u('/en/') };
 
 const phone = '525531403341';
 const wa = (text: string) => `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;

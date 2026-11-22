@@ -1,4 +1,5 @@
 ---
+import { u } from '../../data/url';
 // v6: la v5 reconstruida con tasteskill (design-taste-frontend 2.5). El kit vive en /public/assets.
 import { getImage } from 'astro:assets';
 import { content, shared } from '../../i18n/content';
@@ -78,7 +79,7 @@ const faq = v.faq.slice(0, 3).map((f, i) => i !== 1 ? f : { q: f.q, a: copy(
   'La prima (el precio del seguro) cambia según tu edad, la suma asegurada, el deducible, el coaseguro y las coberturas que elijas. El deducible es lo que pagas antes de que la póliza cubra; el coaseguro, la parte de los gastos cubiertos que te toca pagar.',
   'The premium (the price of the insurance) depends on your age, the sum insured, the deductible, the coinsurance and the coverages you choose. The deductible is what you pay before the policy covers; coinsurance is your share of covered costs.') });
 const familySrc = await img(family, 1400);
-const other = english ? { href: '/v6/', label: 'Español', lang: 'es' } : { href: '/v6/en/', label: 'English', lang: 'en' };
+const other = english ? { href: u('/v6/'), label: 'Español', lang: 'es' } : { href: u('/v6/en/'), label: 'English', lang: 'en' };
 const title = copy('RB y Asociados: asesoría en seguros médicos y retiro', 'RB y Asociados: health insurance and retirement advice');
 const description = copy(
   'Víctor Robles te ayuda a elegir tu seguro de gastos médicos mayores o tu plan de retiro y te acompaña en cada renovación. Atención en CDMX, Puebla, Guadalajara y Monterrey.',
@@ -97,9 +98,9 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
 <meta property="og:type" content="website">
 <meta property="og:title" content={title}>
 <meta property="og:description" content={description}>
-<meta property="og:image" content="/v6/share.jpg">
+<meta property="og:image" content={u('/v6/share.jpg')}>
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/brand/rb-asociados-favicon.svg" type="image/svg+xml">
+<link rel="icon" href={u('/brand/rb-asociados-favicon.svg')} type="image/svg+xml">
 <meta name="theme-color" content="#fff5ea">
 <!-- <link rel="canonical" href="https://rbaseguros.com.mx/"> -->
 <link rel="alternate" hreflang={other.lang} href={other.href}>
@@ -108,11 +109,11 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400..700&family=Libre+Franklin:wght@400..600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/system.css">
-<link rel="stylesheet" href="/assets/ui/cards.css">
-<link rel="stylesheet" href="/assets/motion/motion.css">
-<link rel="stylesheet" href="/assets/layout/layout.css">
-<link rel="stylesheet" href="/assets/icons/icon.css">
+<link rel="stylesheet" href={u('/assets/system.css')}>
+<link rel="stylesheet" href={u('/assets/ui/cards.css')}>
+<link rel="stylesheet" href={u('/assets/motion/motion.css')}>
+<link rel="stylesheet" href={u('/assets/layout/layout.css')}>
+<link rel="stylesheet" href={u('/assets/icons/icon.css')}>
 <style is:inline>
 :root {
   --p-bg: #fff5ea; --p-surface: #f2eae3; --p-ink: #202e64; --p-muted: #5a678d;
@@ -128,10 +129,10 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
 </style>
 <script is:inline>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
 <script is:inline>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
-<link rel="modulepreload" href="/assets/moments/moments.js">
-<link rel="modulepreload" href="/assets/moments/lib.js">
-<link rel="modulepreload" href="/assets/moments/pinned-chapters/moment.js">
-<link rel="modulepreload" href="/assets/moments/word-highlight/moment.js">
+<link rel="modulepreload" href={u('/assets/moments/moments.js')}>
+<link rel="modulepreload" href={u('/assets/moments/lib.js')}>
+<link rel="modulepreload" href={u('/assets/moments/pinned-chapters/moment.js')}>
+<link rel="modulepreload" href={u('/assets/moments/word-highlight/moment.js')}>
 <style is:inline>
   /* page CSS: el logo del cliente en la barra y el pie; el monograma en el marco de Víctor */
   .nav__logo .rb-logo { display: block; width: 168px; line-height: 0; }
@@ -272,7 +273,7 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
             <ul class="ins-track">
               {[0, 1].map(k => row.map(([name, file]) => (
                 <li class:list={{ tall: tall.includes(file) }} aria-hidden={k === 1 || r === 1 ? 'true' : undefined}>
-                  <img src={'/aseguradoras/' + file} alt={k === 0 && r === 0 ? name : ''} loading="lazy" decoding="async" draggable="false" width="200" height="60">
+                  <img src={u('/aseguradoras/' + file)} alt={k === 0 && r === 0 ? name : ''} loading="lazy" decoding="async" draggable="false" width="200" height="60">
                 </li>
               )))}
             </ul>
@@ -289,7 +290,7 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
         <p class="t-lead">{t.victor.lead}</p>
         <p>{copy('En 2003 fundó RB y Asociados. Cada póliza la emite la aseguradora; nosotros te ayudamos a llegar con la información clara.', 'He founded RB y Asociados in 2003. The insurer issues each policy; we help you get there with clear information.')}</p>
         <div class="socials-row">
-          {shared.socials.map(s => <a class="link" href={s.url} target="_blank" rel="noopener"><img src={`/assets/icons/${s.icon}.svg`} loading="lazy" alt="" width="20" height="20" class={s.icon === 'instagram' ? 'ic-ink' : undefined}>{s.name}</a>)}
+          {shared.socials.map(s => <a class="link" href={s.url} target="_blank" rel="noopener"><img src={u(`/assets/icons/${s.icon}.svg`)} loading="lazy" alt="" width="20" height="20" class={s.icon === 'instagram' ? 'ic-ink' : undefined}>{s.name}</a>)}
         </div>
       </div>
       <!-- client slot: retrato de Víctor (4:5) cuando lo envíe; mientras tanto, una familia a la mesa (Unsplash). -->
@@ -347,8 +348,8 @@ const arrow = '<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path
   // El carrusel de aseguradoras solo corre mientras está en pantalla
   (() => { const m = document.querySelector('[data-marquee]'); if (m && 'IntersectionObserver' in window) new IntersectionObserver(([e]) => m.classList.toggle('running', e.isIntersecting)).observe(m); })();
 </script>
-<script is:inline type="module" src="/assets/system.js"></script>
-<script is:inline type="module" src="/assets/motion/motion.js"></script>
-<script is:inline type="module" src="/assets/layout/layout.js"></script>
+<script is:inline type="module" src={u('/assets/system.js')}></script>
+<script is:inline type="module" src={u('/assets/motion/motion.js')}></script>
+<script is:inline type="module" src={u('/assets/layout/layout.js')}></script>
 </body>
 </html>

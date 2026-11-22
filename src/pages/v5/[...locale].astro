@@ -1,4 +1,5 @@
 ---
+import { u } from '../../data/url';
 import { Image } from 'astro:assets';
 import '@fontsource-variable/source-sans-3/wght.css';
 import '@fontsource/dm-serif-text/latin-400.css';
@@ -52,8 +53,8 @@ const nav = [
   { id: 'preguntas', label: copy('Dudas', 'Questions') },
 ];
 const langs = [
-  { code: 'es', label: 'ES', href: '/v5/', name: 'Español', current: !english },
-  { code: 'en', label: 'EN', href: '/v5/en/', name: 'English', current: english },
+  { code: 'es', label: 'ES', href: u('/v5/'), name: 'Español', current: !english },
+  { code: 'en', label: 'EN', href: u('/v5/en/'), name: 'English', current: english },
 ];
 ---
 <!doctype html>
@@ -64,7 +65,7 @@ const langs = [
     <meta name="theme-color" content="#202e64" />
     <meta name="robots" content="noindex" />
     <meta name="description" content={v.description} />
-    <link rel="icon" href="/favicon.svg" />
+    <link rel="icon" href={u('/favicon.svg')} />
     <title>RB y Asociados · {copy('Seguros y retiro', 'Insurance and retirement')}</title>
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
@@ -192,7 +193,7 @@ const langs = [
               <ul class="track">
                 {[0, 1].map(copyIndex => row.map(([name, file]) => (
                   <li class:list={{ tall: ['bupa.svg', 'qualitas.svg', 'ana.svg'].includes(file) }} aria-hidden={copyIndex === 1 || r === 1 ? 'true' : undefined}>
-                    <img src={'/aseguradoras/' + file} alt={copyIndex === 0 && r === 0 ? name : ''} loading="lazy" decoding="async" draggable="false"/>
+                    <img src={u('/aseguradoras/' + file)} alt={copyIndex === 0 && r === 0 ? name : ''} loading="lazy" decoding="async" draggable="false"/>
                   </li>
                 )))}
               </ul>

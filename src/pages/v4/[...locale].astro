@@ -1,4 +1,5 @@
 ---
+import { u } from '../../data/url';
 import { Image } from 'astro:assets';
 import '@fontsource-variable/source-sans-3/wght.css';
 import '@fontsource/dm-serif-text/latin-400.css';
@@ -51,7 +52,7 @@ const solutions = [
     <meta name="theme-color" content="#202e64" />
     <meta name="robots" content="noindex" />
     <meta name="description" content={t.description} />
-    <link rel="icon" href="/favicon.svg" />
+    <link rel="icon" href={u('/favicon.svg')} />
     <title>RB y Asociados · {copy('Seguros y retiro', 'Insurance and retirement')}</title>
   </head>
   <body id="inicio">
@@ -62,7 +63,7 @@ const solutions = [
         <a href="#acompanamiento">{copy('Acompañamiento','Guidance')}</a><a href="#soluciones">{services}</a><a href="#firma">{firm}</a><a href="#preguntas">{copy('Preguntas', 'FAQs')}</a>
       </nav>
       <div class="actions">
-        <a href={english ? '/v4/' : '/v4/en/'} lang={english ? 'es' : 'en'} aria-label={english ? 'Español' : 'English'}>{english ? 'ES' : 'EN'}</a>
+        <a href={u(english ? '/v4/' : '/v4/en/')} lang={english ? 'es' : 'en'} aria-label={english ? 'Español' : 'English'}>{english ? 'ES' : 'EN'}</a>
         <a class="button dark" href="#contacto">{copy('Contacto', 'Contact')}</a>
       </div>
     </header>
@@ -112,7 +113,7 @@ const solutions = [
       </div>
         <div class="partners wrap">
           <h3>{copy('Aseguradoras con las que trabaja Víctor', 'Insurers Víctor works with')}</h3>
-          <ul>{insurers.map(([name,file]) => <li><img src={'/aseguradoras/' + file} alt={name} loading="lazy"/></li>)}</ul>
+          <ul>{insurers.map(([name,file]) => <li><img src={u('/aseguradoras/' + file)} alt={name} loading="lazy"/></li>)}</ul>
         </div>
       </section>
       <section class="wrap section columns" id="preguntas">

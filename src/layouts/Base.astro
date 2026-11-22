@@ -1,4 +1,5 @@
 ---
+import { u } from '../data/url';
 import '@fontsource/dm-serif-text/400.css';
 import '@fontsource-variable/source-sans-3/wght.css';
 
@@ -23,7 +24,7 @@ const site = Astro.site ?? new URL('https://rbaseguros.com.mx');
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#202E64" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
