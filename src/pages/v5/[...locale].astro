@@ -21,6 +21,7 @@ const insurers: [string, string][] = [
   ['Seguros Monterrey New York Life', 'monterrey.webp'], ['Insignia Life', 'insignia.svg'],
   ['Bupa', 'bupa.svg'], ['Quálitas', 'qualitas.svg'],
   ['ANA Seguros', 'ana.svg'], ['Prevem Seguros', 'prevem.webp'],
+  ['AXA', 'axa.svg'],
 ];
 // Dos filas para el carrusel: la segunda en otro orden para que nunca coincidan los logos.
 const rows = [insurers, [...insurers.slice(4), ...insurers.slice(0, 4)].reverse()];
@@ -113,7 +114,6 @@ const langs = [
         </div>
         <div class="hero-inner wrap">
           <div class="hero-copy">
-            <p class="eyebrow light-eyebrow"><span class="dot"></span>{copy('Asesoría personal desde 1984', 'Personal advice since 1984')}</p>
             <h1>
               <span class="line"><span>{copy('Tu seguro,', 'Insurance,')}</span></span>
               <span class="line"><span><em>{copy('con alguien','with someone')}</em></span></span>
@@ -128,7 +128,6 @@ const langs = [
 
       <section class="guidance" id="acompanamiento"><div class="wrap section columns">
         <div>
-          <p class="eyebrow" data-reveal>{v.momentsKicker}</p>
           <h2 data-reveal="lines"><span class="line"><span>{copy('Contratar es solo','Signing up is just')}</span></span> <span class="line"><span><em>{copy('el principio.', 'the beginning.')}</em></span></span></h2>
         </div>
         <div class="moments">
@@ -149,7 +148,6 @@ const langs = [
         <div class="wrap">
           <div class="sol-head">
             <div>
-              <p class="eyebrow" data-reveal>{services}</p>
               <h2 data-reveal="lines"><span class="line"><span>{copy('¿Qué quieres', 'What matters')}</span></span> <span class="line"><span><em>{copy('proteger?', 'to you?')}</em></span></span></h2>
             </div>
             <p class="sol-intro" data-reveal>{copy('Cada plan se arma a tu medida y pueden combinarse: te explicamos, comparamos opciones y decides con calma.', 'Every plan is tailored to you and they can be combined: we explain, compare options together and you decide calmly.')}</p>
@@ -182,7 +180,7 @@ const langs = [
         </div>
       </section>
 
-      <section class="partners section" aria-labelledby="partners-title">
+      <section class="partners section" id="aseguradoras" aria-labelledby="partners-title">
         <div class="wrap partners-head">
           <h2 id="partners-title" data-reveal="lines"><span class="line"><span>{copy('Comparamos por ti entre', 'We compare options across')}</span></span> <span class="line"><span><em>{copy('aseguradoras líderes.', 'leading insurers.')}</em></span></span></h2>
           <p data-reveal>{copy('No dependes de una sola compañía: buscamos la opción que mejor se ajusta a lo que necesitas y a tu presupuesto.', 'You are not tied to a single company: we look for the option that best fits your needs and your budget.')}</p>
@@ -192,7 +190,7 @@ const langs = [
             <div class:list={['marquee-row', { reverse: r === 1 }]}>
               <ul class="track">
                 {[0, 1].map(copyIndex => row.map(([name, file]) => (
-                  <li class:list={{ tall: ['bupa.svg', 'qualitas.svg', 'ana.svg'].includes(file) }} aria-hidden={copyIndex === 1 || r === 1 ? 'true' : undefined}>
+                  <li class:list={{ tall: ['bupa.svg', 'qualitas.svg', 'ana.svg', 'axa.svg'].includes(file) }} aria-hidden={copyIndex === 1 || r === 1 ? 'true' : undefined}>
                     <img src={u('/aseguradoras/' + file)} alt={copyIndex === 0 && r === 0 ? name : ''} loading="lazy" decoding="async" draggable="false"/>
                   </li>
                 )))}
@@ -218,17 +216,33 @@ const langs = [
       </div></section>
 
       <section class="wrap section columns" id="preguntas">
-        <div><p class="eyebrow" data-reveal>{copy('Preguntas frecuentes', 'FAQs')}</p><h2 data-reveal="lines"><span class="line"><span>{copy('Antes de decidir.', 'Before you decide.')}</span></span></h2></div>
+        <div><h2 data-reveal="lines"><span class="line"><span>{copy('Antes de decidir.', 'Before you decide.')}</span></span></h2></div>
         <div>{v.faq.map((f, i) => <details name="faq" data-reveal style={`--d:${i * 70}ms`}><summary><span class="sum-label">{f.q}</span><span class="toggle" aria-hidden="true"></span></summary><div class="details-body"><p>{f.a}</p></div></details>)}</div>
       </section>
     </main>
 
-    <footer id="contacto"><div class="wrap section">
-      <p class="eyebrow light-eyebrow" data-reveal>{copy('Contacto', 'Contact')}</p>
+    <footer id="contacto"><div class="wrap section footer-inner">
+      <div class="closing-cta">
       <h2 data-reveal="lines"><span class="line"><span>{copy('¿Lo', 'Shall we')} <em>{copy('platicamos?', 'talk?')}</em></span></span></h2>
       <div class="contacts" data-reveal><a class="button light" href={consultation}><Icon name="whatsapp" size={18}/><span>WhatsApp · {shared.phoneDisplay}</span><Icon class="arrow" name="arrow" size={16}/></a><a class="link" href={`mailto:${shared.email}`}>{shared.email}</a></div>
-      <p class="cities" data-reveal>{shared.cities.join(' · ')}</p>
-      <div class="foot"><Logo tone="light"/><small>{t.footer}</small></div>
+      </div>
+      <!-- Enlaces de cierre, como en la v6: marca y ciudades, cuatro columnas y la fila legal -->
+      <div class="closing-links">
+        <div class="closing-grid">
+          <div class="closing-brand">
+            <a class="closing-logo" href="#inicio" aria-label={t.homeLabel}><Logo tone="light"/></a>
+            <p>{copy('Asesoría en seguros y retiro en CDMX, Puebla, Guadalajara y Monterrey.', 'Insurance and retirement advice in Mexico City, Puebla, Guadalajara and Monterrey.')}</p>
+          </div>
+          <div class="closing-col"><h3>{copy('Coberturas', 'Coverage')}</h3><ul>{solutions.slice(0, 3).map(s => <li><a href="#soluciones">{s.label}</a></li>)}</ul></div>
+          <div class="closing-col"><h3>{copy('Despacho', 'Firm')}</h3><ul><li><a href="#acompanamiento">{copy('Cómo trabajamos', 'Our approach')}</a></li><li><a href="#aseguradoras">{copy('Aseguradoras', 'Insurers')}</a></li><li><a href="#victor">Víctor Robles</a></li></ul></div>
+          <div class="closing-col"><h3>{copy('Contacto', 'Contact')}</h3><ul><li><a href={consultation}>WhatsApp</a></li><li><a href={`mailto:${shared.email}`}>{copy('Correo', 'Email')}</a></li><li><a href="#preguntas">{copy('Dudas', 'Questions')}</a></li></ul></div>
+          <div class="closing-col"><h3>{copy('Redes', 'Social')}</h3><ul>{shared.socials.filter(s => s.url).map(s => <li><a href={s.url} target="_blank" rel="noopener">{s.name}</a></li>)}</ul></div>
+        </div>
+        <div class="closing-legal">
+          <span>&copy; 2026 RB y Asociados</span>
+          {langs.filter(l => !l.current).map(l => <a href={l.href} lang={l.code} hreflang={l.code}>{l.name}</a>)}
+        </div>
+      </div>
     </div></footer>
 
     <script>

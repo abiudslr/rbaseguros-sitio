@@ -48,9 +48,10 @@ const insurers: [string, string][] = [
   ['Seguros Monterrey New York Life', 'monterrey.webp'], ['Insignia Life', 'insignia.svg'],
   ['Bupa', 'bupa.svg'], ['Quálitas', 'qualitas.svg'],
   ['ANA Seguros', 'ana.svg'], ['Prevem Seguros', 'prevem.webp'],
+  ['AXA', 'axa.svg'],
 ];
 const rows = [insurers, [...insurers.slice(4), ...insurers.slice(0, 4)].reverse()];
-const tall = ['bupa.svg', 'qualitas.svg', 'ana.svg'];
+const tall = ['bupa.svg', 'qualitas.svg', 'ana.svg', 'axa.svg'];
 
 const services = [
   { id: 'gastos-medicos', name: copy('Gastos médicos mayores', 'Major medical insurance'), line: copy('Red de hospitales, deducible y coaseguro.', 'Hospital network, deductible and coinsurance.'), src: await img(medical, 1200), alt: copy('Una doctora revisa a un paciente en el consultorio.', 'A doctor examines a patient in the consulting room.') },

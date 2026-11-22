@@ -396,9 +396,26 @@ footer .section { padding-bottom: 30px; }
 footer h2 { font-size: min(clamp(3rem, 7vw, 7.5rem), 13vw); margin-bottom: 36px; }
 footer h2 em { color: var(--peach); }
 .contacts { display: flex; flex-wrap: wrap; align-items: center; gap: 28px; }
-.cities { margin-top: 26px; color: #c8cbe0; }
-.foot { display: flex; align-items: center; justify-content: space-between; gap: 30px; border-top: 1px solid #ffffff30; margin-top: 70px; padding-top: 26px; }
-.foot small { max-width: 62ch; color: #c8cbe0; }
+/* El pie llena su pantalla: arriba la invitación, abajo los enlaces de cierre */
+footer > .footer-inner { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: clamp(48px, 7vw, 96px); }
+.closing-links { border-top: 1px solid #ffffff30; padding-top: 32px; }
+.closing-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 32px 24px; }
+.closing-brand { grid-column: span 4; display: grid; gap: 16px; align-content: start; }
+.closing-logo { display: block; width: clamp(150px, 14vw, 200px); line-height: 0; }
+.closing-brand p { max-width: 30ch; color: #c8cbe0; }
+.closing-col { grid-column: span 2; }
+.closing-col h3 { margin-bottom: 14px; font: 600 .85rem/1.3 'Source Sans 3 Variable', Arial, sans-serif; letter-spacing: .02em; color: #c8cbe0; }
+.closing-col ul { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.closing-col a { display: inline-flex; align-items: center; min-height: 36px; transition: color .3s ease; }
+.closing-col a:hover, .closing-legal a:hover { color: var(--peach); }
+.closing-legal { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 28px; margin-top: 36px; padding-top: 20px; border-top: 1px solid #ffffff1f; font-size: .9rem; color: #c8cbe0; }
+@media (max-width: 900px) {
+  .closing-brand { grid-column: 1 / -1; }
+  .closing-col { grid-column: span 3; }
+}
+@media (max-width: 560px) {
+  .closing-col { grid-column: span 6; }
+}
 
 /* ───────── Movimiento ───────── */
 @media (prefers-reduced-motion: no-preference) {
